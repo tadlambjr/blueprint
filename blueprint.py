@@ -37,7 +37,7 @@ if __name__ == "__main__":
         process_platforms(platform_names[:-1])
     else:
         process_platforms(target_string.split(','))
-    get_mappings(java_file)
+    # get_mappings(java_file)
     # for controller in controllers:
     #     print(controller)
     # for subdir, dirs, files in os.walk('.'):

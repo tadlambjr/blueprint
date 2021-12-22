@@ -18,7 +18,9 @@ class Controller:
 
     def __init__(self, filename):
         self._filename = filename
-        self._class_name = re.match(r'^.*\/(.*)\.java$', filename).group(1)
+        self._class_name = re.match(r'^.*\/(.*)\.java', filename).group(1)
+        self.parse_file()
+        print(self)
 
     def parse_file(self):
         lines = open(self._filename).readlines()
@@ -49,8 +51,6 @@ class Controller:
         return self._filename
 
     def __str__(self):
-        mappings = "\n\t".join(self.mappings)
+        mappings = "\n\t    ".join(self.mappings)
         secured = '  ' if self.authentication_missing else u'\U0001F512 '
-        return f'{secured}{self._class_name}\n\t{mappings}'
-
-# @PreAuthorize("isAuthenticated()")
+        return f'\n\t{secured}{self._class_name}\n\t    {mappings}'
