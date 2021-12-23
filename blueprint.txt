@@ -6,42 +6,43 @@ PLATFORM: accounting
 
 	Repository: ofl-next-accounting-data-adapter (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-data-adapter)
 
-	🔒 LocalSustainController
-	    POST /tmsintegrationapi/api/v1/import/monarch/
+	  🔒 LocalSustainController
+		 POST /tmsintegrationapi/api/v1/import/monarch/
 
-	🔒 AccountingDataAdapterController
-	    PUT /mg-transaction-test
-	    PUT /mg-transaction
-	    POST /sustain-transaction/{systemTransactionId}/replay
+	  🔒 AccountingDataAdapterController
+		 PUT /mg-transaction-test
+		 PUT /mg-transaction
+		 POST /sustain-transaction/{systemTransactionId}/replay
 
 	Repository: ofl-next-accounting-filter-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-filter-resource)
 
-	🔒 FinanceReportController
-	    GET /financeReport
+	  🔒 FinanceReportController
+		 GET /financeReport
 
-	🔒 PendingReviewController
-	    POST /transaction/pending-review/abort
+	  🔒 PendingReviewController
+		 GET /transaction/pending-review
+		 POST /transaction/pending-review/abort
 
-	🔒 NonAcuteMatchOverrideController
-	    GET /match-override/accountDetails/{carrierAccountNumber}
+	  🔒 NonAcuteMatchOverrideController
+		 GET /match-override/accountDetails/{carrierAccountNumber}
 
-	🔒 FailedTransactionController
-	    GET /filter/transaction
-	    GET /filter/transaction/{receivedTransactionId}/match
-	    GET /filter/transaction/{receivedTransactionId}
-	    DELETE /filter/receivedTransaction/{receivedTransactionId}/payer
+	  🔒 FailedTransactionController
+		 GET /filter/transaction
+		 GET /filter/transaction/{receivedTransactionId}/match
+		 GET /filter/transaction/{receivedTransactionId}
+		 DELETE /filter/receivedTransaction/{receivedTransactionId}/payer
 
-	🔒 FilterResourceController
-	    POST /receivedTransaction
-	    POST /matchResponse
+	  🔒 FilterResourceController
+		 POST /receivedTransaction
+		 POST /matchResponse
 
-	🔒 CleanUpTransactionController
-	    POST /cleanUpTransactions
+	  🔒 CleanUpTransactionController
+		 POST /cleanUpTransactions
 
 	Repository: ofl-next-rules-lookup-service (⎇  git: https://github.com/CardinalHealth/ofl-next-rules-lookup-service)
 
-	  LookupController
-	    
+	    LookupController
+		 POST /lookup
 
 	Repository: ofl-next-allocation-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-allocation-resource-service)
 
@@ -49,39 +50,40 @@ PLATFORM: accounting
 
 	Repository: ofl-next-accounting-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-experience-api)
 
-	🔒 PendingReviewExperienceController
-	    GET /accounting/filter/pending-review
-	    POST /accounting/filter/pending-review/reject
+	  🔒 PendingReviewExperienceController
+		 GET /accounting/filter/pending-review
+		 POST /accounting/filter/pending-review/reject
 
-	🔒 TransactionExperienceController
-	    GET /accounting/filter/transactions
-	    PATCH /accounting/filter/transactions
+	  🔒 TransactionExperienceController
+		 GET /accounting/filter/transactions
+		 PATCH /accounting/filter/transactions
 
-	🔒 CarrierEdgeController
-	    GET /operationsaudit-summary
+	  🔒 CarrierEdgeController
+		 GET /operationsaudit-summary
 
-	🔒 BillingFacilityDetailsExperienceController
-	    GET /accounting/facility/details
+	  🔒 BillingFacilityDetailsExperienceController
+		 GET /accounting/facility/details
 
 	Repository: ofl-next-accounting-system-tests (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-system-tests)
 
 	Repository: ofl-next-pricing-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-pricing-resource-service)
 
-	🔒 ResourceServiceController
-	    GET /recipes/{recipeId}
-	    DELETE /recipes/{recipeId}
+	  🔒 ResourceServiceController
+		 GET /recipes/{recipeId}
+		 POST /recipes
+		 DELETE /recipes/{recipeId}
 
 	Repository: ofl-next-accounting-invoice-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-invoice-resource-service.git)
 
-	🔒 TransactionReconciliationEventController
-	    POST /transactionEvent
+	  🔒 TransactionReconciliationEventController
+		 POST /transactionEvent
 
 	Repository: ofl-next-accounting-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-stand-in-service)
 
-	🔒 AccountingStandInController
-	    GET /users
-	    GET /users/{id}
-	    GET /facility
+	  🔒 AccountingStandInController
+		 GET /users
+		 GET /users/{id}
+		 GET /facility
 
 	Repository: ofl-next-accounting-web (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-web)
 
@@ -89,21 +91,21 @@ PLATFORM: accounting
 
 	Repository: ofl-next-accounting-transaction-edge-service (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-transaction-edge-service)
 
-	  FakeCustomerEdgeServiceController
-	    GET /carrierAccountNumbers/primary/{billingGroupId}
-	    GET /billingGroupIds/{carrierAccountNumber}
-	    GET /billingGroupId/{billingGroupId}/facilityId/{facility}/validate
+	    FakeCustomerEdgeServiceController
+		 🔒 GET /carrierAccountNumbers/primary/{billingGroupId}
+		 GET /billingGroupIds/{carrierAccountNumber}
+		 GET /billingGroupId/{billingGroupId}/facilityId/{facility}/validate
 
-	  FakeCarrierEdgeServiceController
-	    GET /operations/audit-summary
+	    FakeCarrierEdgeServiceController
+		 GET /operations/audit-summary
 
-	  FakeLocationMatchController
-	    POST /match
+	    FakeLocationMatchController
+		 🔒 POST /match
 
-	  TransactionEdgeController
-	    POST /transaction/accountingFilter
-	    POST /transaction/replay
-	    POST /locationMatch
+	    TransactionEdgeController
+		 🔒 POST /transaction/accountingFilter
+		 🔒 POST /transaction/replay
+		 🔒 POST /locationMatch
 
 PLATFORM: carrier
 =========================
@@ -112,39 +114,50 @@ PLATFORM: carrier
 
 	Repository: ofl-next-carrier-invoice-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-invoice-resource-service)
 
-	🔒 FileMetadataController
-	    GET /file-metadata/{id}
+	  🔒 FileMetadataController
+		 POST /file-metadata
+		 GET /file-metadata/{id}
+		 GET /file-metadata
 
-	🔒 ResourceServiceController
-	    GET /recipes/{recipeId}
-	    DELETE /recipes/{recipeId}
+	  🔒 ResourceServiceController
+		 GET /recipes/{recipeId}
+		 GET /recipes
+		 POST /recipes
+		 DELETE /recipes/{recipeId}
 
-	  ControllerExceptionHandler
-	    
+	    ControllerExceptionHandler
+		 
 
-	🔒 ProcessedFileMetadataController
-	    
+	  🔒 ProcessedFileMetadataController
+		 
 
-	🔒 AuditFailedTransactionController
-	    
+	  🔒 AuditFailedTransactionController
+		 POST /audit-failed-transaction
+		 GET /audit-failed-transaction
 
-	🔒 PendingCarrierTransactionController
-	    
+	  🔒 PendingCarrierTransactionController
+		 GET /pending-carrier-transaction
+		 POST /pending-carrier-transaction
 
-	🔒 TransitionalTransactionController
-	    GET /transitional-transactions/{systemTransactionId}
+	  🔒 TransitionalTransactionController
+		 POST /transitional-transactions
+		 GET /transitional-transactions/{systemTransactionId}
 
-	🔒 TransactionController
-	    PATCH /transactions/{id}
+	  🔒 TransactionController
+		 POST /transactions
+		 PATCH /transactions/{id}
+		 GET /transactions
 
-	🔒 OriginalTransactionsController
-	    GET /original-transactions/{transactionId}
+	  🔒 OriginalTransactionsController
+		 POST /original-transactions
+		 GET /original-transactions/{transactionId}
 
-	🔒 BundledTransactionController
-	    GET /bundled-transactions/{bundleId}
+	  🔒 BundledTransactionController
+		 POST /bundled-transactions
+		 GET /bundled-transactions/{bundleId}
 
-	🔒 RawTransactionController
-	    
+	  🔒 RawTransactionController
+		 POST /raw-transactions
 
 	Repository: ofl-next-carrier-edi-infrastructure (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-edi-infrastructure)
 
@@ -152,80 +165,85 @@ PLATFORM: carrier
 
 	Repository: ofl-next-carrier-invoice-edge-api (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-invoice-edge-api)
 
-	  InvoiceController
-	    
+	    InvoiceController
+		 GET /invoices
 
 	Repository: ofl-next-carrier-system-tests (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-system-tests)
 
 	Repository: ofl-next-carrier-data-processor (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-data-processor)
 
-	🔒 FileMetadataController
-	    
+	  🔒 FileMetadataController
+		 GET /file-metadata
 
-	🔒 WeeklyFuelPricesController
-	    
+	  🔒 WeeklyFuelPricesController
+		 POST /weekly-fuel-prices
 
 	Repository: ofl-next-carrier-edge-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-edge-service)
 
-	  ControllerExceptionHandler
-	    
+	    ControllerExceptionHandler
+		 
 
-	🔒 ReportsController
-	    GET /reports
+	  🔒 ReportsController
+		 GET /reports
 
-	🔒 OperationsController
-	    GET /operations/audit-summary
+	  🔒 OperationsController
+		 GET /operations/audit-summary
 
 	Repository: ofl-next-carrier-web (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-web)
 
 	Repository: ofl-next-carrier-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-stand-in-service.git)
 
-	🔒 CarrierStandInController
-	    GET /users
-	    GET /users/{id}
+	  🔒 CarrierStandInController
+		 GET /users
+		 GET /users/{id}
 
 	Repository: ofl-next-carrier-contract-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-contract-resource-service)
 
-	🔒 SurchargeDiscountsController
-	    
+	  🔒 SurchargeDiscountsController
+		 GET /surcharge-discounts
 
-	  ControllerExceptionHandler
-	    
+	    ControllerExceptionHandler
+		 
 
-	🔒 FuelSurchargesController
-	    
+	  🔒 FuelSurchargesController
+		 GET /fuel-surcharges
 
-	🔒 WeeklyFuelPricesController
-	    
+	  🔒 WeeklyFuelPricesController
+		 POST /weekly-fuel-prices
+		 GET /weekly-fuel-prices
 
-	🔒 AccessorialListRateController
-	    
+	  🔒 AccessorialListRateController
+		 GET /accessorial-list-rates
 
-	🔒 CarrierContractController
-	    
+	  🔒 CarrierContractController
+		 GET /carrier-contract/min-rate
+		 GET /carrier-contract/dim-weight-factor
+		 GET /carrier-contract/list-rate-discount
+		 GET /carrier-contract/carrier-accounts
 
-	🔒 ServiceLevelController
-	    
+	  🔒 ServiceLevelController
+		 GET /service-levels
 
-	🔒 ListRateController
-	    
+	  🔒 ListRateController
+		 GET /list-rates
 
-	🔒 SurchargeController
-	    
+	  🔒 SurchargeController
+		 GET /surcharges
 
 	Repository: ofl-next-carrier-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-experience-api)
 
-	  ControllerExceptionHandler
-	    
+	    ControllerExceptionHandler
+		 
 
-	🔒 TransactionController
-	    GET /transactions/pending-review
-	    GET /transactions/pending-carrier
-	    PATCH /transactions/{id}
-	    POST /transactions/pending-carrier
+	  🔒 TransactionController
+		 GET /transactions/pending-review
+		 GET /transactions/pending-carrier
+		 GET /transactions
+		 PATCH /transactions/{id}
+		 POST /transactions/pending-carrier
 
-	🔒 BundledTransactionController
-	    GET /bundled-transactions/{bundleId}
+	  🔒 BundledTransactionController
+		 GET /bundled-transactions/{bundleId}
 
 	Repository: ofl-next-carrier-apigee-pipelines (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-apigee-pipelines)
 
@@ -236,73 +254,73 @@ PLATFORM: customer
 
 	Repository: ofl-next-customer-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-resource)
 
-	🔒 SftpAccountController
-	    GET /sftp/sftpUsername/{username}
-	    GET /sftp/sftpNewUserAccount/{username}
+	  🔒 SftpAccountController
+		 GET /sftp/sftpUsername/{username}
+		 GET /sftp/sftpNewUserAccount/{username}
 
-	🔒 CarrierAccountNumberDetailsController
-	    GET /carrierAccountNumbers/primary
+	  🔒 CarrierAccountNumberDetailsController
+		 GET /carrierAccountNumbers/primary
 
-	🔒 CustomerController
-	    GET /customer/{customerId}
-	    POST /customer/{sourceRecordId}/replay
-	    POST /customer/replay
+	  🔒 CustomerController
+		 GET /customer/{customerId}
+		 POST /customer/{sourceRecordId}/replay
+		 POST /customer/replay
 
-	  FileTypeMapController
-	    GET /getRequiredFields
-	    GET /getAllFileTypeMappers
+	    FileTypeMapController
+		 GET /getRequiredFields
+		 GET /getAllFileTypeMappers
 
-	🔒 FacilityDetailsController
-	    GET /oldFacility
-	    GET /facilityName/{facilityId}
-	    GET /facility
+	  🔒 FacilityDetailsController
+		 GET /oldFacility
+		 GET /facilityName/{facilityId}
+		 GET /facility
 
-	🔒 BillingGroupDetailsController
-	    GET /billingGroupIds
-	    GET /billToAddress
+	  🔒 BillingGroupDetailsController
+		 GET /billingGroupIds
+		 GET /billToAddress
 
-	🔒 CustomerFileUploadController
-	    POST /gcs/file
-	    POST /file/logUploadFailure
-	    POST /customerFile/insertNewRecordIfNotExist
+	  🔒 CustomerFileUploadController
+		 POST /gcs/file
+		 POST /file/logUploadFailure
+		 POST /customerFile/insertNewRecordIfNotExist
 
 	Repository: ofl-next-customer-edge-service (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-edge-service)
 
-	🔒 CustomerDataController
-	    POST /customer-data/{id}/metadata
-	    POST /customer-data/{id}/replay
-	    POST /customer-data/replay
+	  🔒 CustomerDataController
+		 POST /customer-data/{id}/metadata
+		 POST /customer-data/{id}/replay
+		 POST /customer-data/replay
 
-	🔒 CustomerEdgeController
-	    GET /carrierAccountNumbers/primary/{billingGroupId}
-	    GET /facility/{facilityId}
-	    GET /facility/name/{facilityId}
-	    GET /facility
-	    GET /billingGroupIds/{carrierAccountNumber}
-	    GET /billToAddress/{billingGroupId}
+	  🔒 CustomerEdgeController
+		 GET /carrierAccountNumbers/primary/{billingGroupId}
+		 GET /facility/{facilityId}
+		 GET /facility/name/{facilityId}
+		 GET /facility
+		 GET /billingGroupIds/{carrierAccountNumber}
+		 GET /billToAddress/{billingGroupId}
 
 	Repository: ofl-next-customer-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-stand-in-service)
 
-	🔒 CustomerStandInController
-	    GET /users
-	    GET /users/{id}
-	    GET /users/organization
-	    GET api/v1/user/claims
-	    POST /customer-transactions
-	    GET /customer-transactions
-	    DELETE /customer-transactions
-	    GET /checkDeliveryOfCustomerTransaction
-	    GET /getSftpPassword
+	  🔒 CustomerStandInController
+		 GET /users
+		 GET /users/{id}
+		 GET /users/organization
+		 GET api/v1/user/claims
+		 POST /customer-transactions
+		 GET /customer-transactions
+		 DELETE /customer-transactions
+		 GET /checkDeliveryOfCustomerTransaction
+		 GET /getSftpPassword
 
 	Repository: ofl-next-customer-web (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-web)
 
 	Repository: ofl-next-customer-data-adapter (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-data-adapter)
 
-	🔒 CustomerSyncController
-	    POST /customer/syncCarrierAccountNumber
-	    POST /customer/syncFacilityData
-	    POST /customer/syncCustomerData
-	    POST /customer/syncBillingGroupData
+	  🔒 CustomerSyncController
+		 POST /customer/syncCarrierAccountNumber
+		 POST /customer/syncFacilityData
+		 POST /customer/syncCustomerData
+		 POST /customer/syncBillingGroupData
 
 	Repository: ofl-next-customer-data-processor (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-data-processor)
 
@@ -310,26 +328,26 @@ PLATFORM: customer
 
 	Repository: ofl-next-customer-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-experience-api)
 
-	  SftpAccountController
-	    POST /sftp/createAccount
-	    GET /sftp/sftpAccount
-	    DELETE /sftp/sftpAccount
-	    DELETE /sftp/deleteAccount
+	    SftpAccountController
+		 POST /sftp/createAccount
+		 GET /sftp/sftpAccount
+		 DELETE /sftp/sftpAccount
+		 DELETE /sftp/deleteAccount
 
-	  CustomerFileController
-	    POST /file
+	    CustomerFileController
+		 POST /file
 
-	  FileSummaryController
-	    GET /file-error
-	    DELETE /file-error
-	    GET /file-summary
-	    DELETE /file-summary
+	    FileSummaryController
+		 GET /file-error
+		 DELETE /file-error
+		 GET /file-summary
+		 DELETE /file-summary
 
-	  UserInfoController
-	    GET /user/info
+	    UserInfoController
+		 GET /user/info
 
-	  CustomerInfoController
-	    GET /customer/info
+	    CustomerInfoController
+		 GET /customer/info
 
 PLATFORM: ecosystem
 =========================
@@ -342,102 +360,112 @@ PLATFORM: ecosystem
 
 	Repository: ofl-next-ecosystem-messaging-api (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-messaging-api)
 
-	  ControllerExceptionHandler
-	    
+	    ControllerExceptionHandler
+		 
 
-	🔒 MessageController
-	    POST /messages
+	  🔒 MessageController
+		 POST /messages
 
-	  PasswordResetController
-	    POST /password-reset
+	    PasswordResetController
+		 POST /password-reset
 
 	Repository: ofl-next-ecosystem-location-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-location-resource)
 
-	🔒 IntellimatchController
-	    POST /matchfile/target
-	    POST /matchfile/source
+	  🔒 IntellimatchController
+		 POST /matchfile/target
+		 POST /matchfile/source
 
-	  MockMatchCallbackController
-	    
+	    MockMatchCallbackController
+		 POST /addressMatchCallback
+		 GET /addressMatchCallback
+		 DELETE /addressMatchCallback
 
-	🔒 IntellimatchResultFileController
-	    POST /intellimatchResultFile/process
+	  🔒 IntellimatchResultFileController
+		 POST /intellimatchResultFile/process
 
-	🔒 DeleteAllController
-	    POST /location/deleteAll
+	  🔒 DeleteAllController
+		 POST /location/deleteAll
 
 	Repository: ofl-next-uaa (git repo section not found)
 
 	Repository: ofl-next-ecosystem-user-edge-api (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-user-edge-api)
 
-	  ControllerExceptionHandler
-	    
+	    ControllerExceptionHandler
+		 
 
-	🔒 UserController
-	    GET users/{user-id}
-	    GET users
-	    POST users
-	    POST users/password-reset-token
-	    GET users/password-reset-token
-	    GET api/v1/user/claims
-	    GET users/organization
+	  🔒 UserController
+		 GET users/{user-id}
+		 GET users
+		 POST users
+		 POST users/password-reset-token
+		 GET users/password-reset-token
+		 GET api/v1/user/claims
+		 GET users/organization
 
 	Repository: ofl-next-accounting-system-test (git repo section not found)
 
 	Repository: ofl-next-ecosystem-location-edge-api (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-location-edge-api)
 
-	🔒 LocationMatchCompletedResponseController
-	    POST /matchNotification
+	  🔒 LocationMatchCompletedResponseController
+		 POST /matchNotification
 
-	🔒 LocationEdgeController
-	    POST /location/address
-	    POST /location/address/deleteAll
+	  🔒 LocationEdgeController
+		 POST /location/address
+		 POST /location/address/deleteAll
 
-	🔒 LocationMatchRequestController
-	    POST /match
+	  🔒 LocationMatchRequestController
+		 POST /match
 
 	Repository: ofl-next-ecosystem-user-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-user-resource)
 
-	🔒 EntityGroupController
-	    POST entity-groups/{entity-group-id}/entities
-	    GET entity-groups/{entity-group-id}
-	    PUT entity-groups/{entity-group-id}
+	  🔒 EntityGroupController
+		 POST entity-groups
+		 POST entity-groups/{entity-group-id}/entities
+		 GET entity-groups/{entity-group-id}
+		 GET entity-groups
+		 PUT entity-groups/{entity-group-id}
 
-	  ControllerExceptionHandler
-	    
+	    ControllerExceptionHandler
+		 
 
-	🔒 UserGroupController
-	    POST user-groups/{user-group-id}/users
-	    PUT user-groups/{user-group-id}
-	    GET user-groups/{user-group-id}
+	  🔒 UserGroupController
+		 POST user-groups
+		 POST user-groups/{user-group-id}/users
+		 PUT user-groups/{user-group-id}
+		 GET user-groups/{user-group-id}
+		 GET user-groups
 
-	🔒 RoleController
-	    GET roles/{role-id}
-	    PUT roles/{roleId}
+	  🔒 RoleController
+		 POST roles
+		 GET roles/{role-id}
+		 GET roles
+		 PUT roles/{roleId}
 
-	🔒 UserController
-	    GET users/{userId}
-	    PUT users/{userId}
-	    GET users/organization
+	  🔒 UserController
+		 GET users/{userId}
+		 GET users
+		 POST users
+		 PUT users/{userId}
+		 GET users/organization
 
-	🔒 PermissionXrefController
-	    
+	  🔒 PermissionXrefController
+		 POST permission-xrefs
 
 	Repository: ofl-next-ecosystem-data-adapter (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-data-adapter)
 
-	🔒 AddressSyncController
-	    POST /address/sync
-	    POST /address/fullRefresh
+	  🔒 AddressSyncController
+		 POST /address/sync
+		 POST /address/fullRefresh
 
 	Repository: ofl-next-ecosystem-system-test (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-system-test)
 
 	Repository: ofl-next-ecosystem-login-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-login-experience-api)
 
-	  AuthenticationController
-	    POST authentication/password-reset
+	    AuthenticationController
+		 POST authentication/password-reset
 
-	  ControllerExceptionHandler
-	    
+	    ControllerExceptionHandler
+		 
 
 PLATFORM: pot
 =========================
@@ -448,16 +476,18 @@ PLATFORM: pot
 
 	Repository: ofl-next-carrier-experience-api-pot (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-experience-api-pot)
 
-	  CarrierExperienceFileController
-	    GET /files/{fileId}
-	    GET /files/{fileId}/errors
+	    CarrierExperienceFileController
+		 GET /files
+		 GET /files/{fileId}
+		 GET /files/{fileId}/errors
 
 	Repository: ofl-next-carrier-data-processor-pot (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-data-processor-pot)
 
 	Repository: ofl-next-carrier-resource-service-pot (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-resource-service-pot)
 
-	  FilesController
-	    GET /files/{fileId}
+	    FilesController
+		 GET /files
+		 GET /files/{fileId}
 
 PLATFORM: shared
 =========================
@@ -472,10 +502,10 @@ PLATFORM: shared
 
 	Repository: ofl-next-apigee-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-apigee-stand-in-service)
 
-	  ApigeeStandInController
-	    POST oauth2/v2/token/jwtforoktab2e
-	    POST oauth2/v2/token/jwtfortest
-	    GET oauth2/v2/token/jwks.json
+	    ApigeeStandInController
+		 POST oauth2/v2/token/jwtforoktab2e
+		 POST oauth2/v2/token/jwtfortest
+		 GET oauth2/v2/token/jwks.json
 
 	Repository: ofl-next-shared-web (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-web)
 
@@ -491,17 +521,17 @@ PLATFORM: shared
 
 	Repository: ofl-next-web-config (⎇  git: https://github.com/CardinalHealth/ofl-next-web-config)
 
-	  WebConfigController
-	    GET /webconfig
+	    WebConfigController
+		 GET /webconfig
 
 	Repository: ofl-next-shared-login-web-module-test (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-login-web-module-test)
 
 	Repository: ofl-next-shared-apigee-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-apigee-stand-in-service)
 
-	  ApigeeStandInController
-	    POST oauth2/v2/token/jwtforoktab2e
-	    POST oauth2/v2/token/jwtfortest
-	    GET oauth2/v2/token/jwks.json
+	    ApigeeStandInController
+		 POST oauth2/v2/token/jwtforoktab2e
+		 POST oauth2/v2/token/jwtfortest
+		 GET oauth2/v2/token/jwks.json
 
 	Repository: ofl-next-shared-login-web-module (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-login-web-module)
 
@@ -509,8 +539,8 @@ PLATFORM: shared
 
 	Repository: ofl-next-rules-core-service (⎇  git: https://github.com/CardinalHealth/ofl-next-rules-core-service)
 
-	🔒 RulesController
-	    POST /recipe_requests
+	  🔒 RulesController
+		 POST /recipe_requests
 
 	Repository: ofl-next-cloud-config-server (⎇  git: https://github.com/CardinalHealth/ofl-next-cloud-config-server)
 
@@ -523,34 +553,35 @@ PLATFORM: supplier
 
 	Repository: ofl-next-supplier-edge-api (⎇  git: https://github.com/CardinalHealth/ofl-next-supplier-edge-api)
 
-	🔒 CustomerTransactionController
-	    
+	  🔒 CustomerTransactionController
+		 POST /customer-transactions
 
 	Repository: ofl-next-supplier-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-supplier-experience-api)
 
-	  NewCustomerSetupResolutionController
-	    
+	    NewCustomerSetupResolutionController
+		 POST new-customer-setup-resolutions
 
-	  CustomerController
-	    GET customersmetadata
+	    CustomerController
+		 GET customersmetadata
 
-	  ControllerExceptionHandler
-	    
+	    ControllerExceptionHandler
+		 
 
-	  SupplierDashboardController
-	    GET /suppliers/{requestedSupplierId}/opportunities/metadata
+	    SupplierDashboardController
+		 GET /suppliers/{requestedSupplierId}/opportunities/metadata
 
-	🔒 ResolutionOptionController
-	    
+	  🔒 ResolutionOptionController
+		 GET resolution-options
 
-	  UserInfoController
-	    GET /users/info
+	    UserInfoController
+		 GET /users/info
 
-	🔒 RoutingGuideController
-	    GET routing-guides/{routing-guide-id}
+	  🔒 RoutingGuideController
+		 POST routing-guides
+		 GET routing-guides/{routing-guide-id}
 
-	  OpportunityController
-	    
+	    OpportunityController
+		 GET opportunities
 
 	Repository: ofl-next-supplier-system-test (⎇  git: https://github.com/CardinalHealth/ofl-next-supplier-system-test)
 
