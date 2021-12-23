@@ -1,4 +1,5 @@
 import os
+import logging
 import configparser
 from controller import Controller
 
@@ -13,14 +14,17 @@ class Repository:
         self._dir = dir
         self._name = name
         self.get_git_repo()
-        print(self)
+        logging.info(self)
         self.scan_code()
 
     def get_git_repo(self):
         config = configparser.ConfigParser()
         git_filepath = f'{self._dir}/{self._name}/{self.git_path}'
         config.read(git_filepath)
-        self.git_repo = u'\u2387  git: ' + config.get('remote "origin"', 'url')
+        try:
+            self.git_repo = u'\u2387  git: ' + config.get('remote "origin"', 'url')
+        except:
+            self.git_repo = 'git repo section not found'
 
     def scan_code(self):
         full_java_path = f'{self._dir}/{self._name}/{self.java_path}'

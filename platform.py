@@ -1,15 +1,17 @@
 import os
+import logging
 
 from repository import Repository
 class Platform:
 
-    ignore_list = ['.DS_Store']
+    ignore_list = ['.DS_Store', '.gradle']
     repositories = []
 
     def __init__(self, root_dir, name):
         self._name = name
         self._root_dir = root_dir
-        print(self)
+        logging.info(self)
+        logging.info('=========================')
         self.find_repositories()
 
     def find_repositories(self):
@@ -20,4 +22,4 @@ class Platform:
                 self.repositories.append(repository)
 
     def __str__(self):
-        return f'    Platform: {self._name}'
+        return f'\nPLATFORM: {self._name}'

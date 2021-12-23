@@ -1,4 +1,5 @@
 import re
+import logging
 
 class Controller:
     """A Controller class"""
@@ -7,22 +8,24 @@ class Controller:
     authentication_missing = True
 
     request_matching_re = re.compile(r'^\@RequestMapping\(\"(.*)\"\)')
-    mapping_root = ''
 
-    get_matching_re    = re.compile(r'\s+\@GetMapping\(\"(.*)\"\)')
-    post_matching_re   = re.compile(r'\s+\@PostMapping\(\"(.*)\"\)')
-    put_matching_re    = re.compile(r'\s+\@PutMapping\(\"(.*)\"\)')
-    patch_matching_re  = re.compile(r'\s+\@PatchMapping\(\"(.*)\"\)')
-    delete_matching_re = re.compile(r'\s+\@DeleteMapping\(\"(.*)\"\)')
-    mappings = []
+    get_matching_def_re = re.compile(r'\s+\@GetMapping\(\"(.*)\"\)')
+    get_matching_re     = re.compile(r'\s+\@GetMapping\(\"(.*)\"\)')
+    post_matching_re    = re.compile(r'\s+\@PostMapping\(\"(.*)\"\)')
+    put_matching_re     = re.compile(r'\s+\@PutMapping\(\"(.*)\"\)')
+    patch_matching_re   = re.compile(r'\s+\@PatchMapping\(\"(.*)\"\)')
+    delete_matching_re  = re.compile(r'\s+\@DeleteMapping\(\"(.*)\"\)')
 
     def __init__(self, filename):
         self._filename = filename
         self._class_name = re.match(r'^.*\/(.*)\.java', filename).group(1)
+        self.mapping_root = ''
+        self.mappings = []
         self.parse_file()
-        print(self)
+        logging.info(self)
 
     def parse_file(self):
+        in_class = False
         lines = open(self._filename).readlines()
         for line in lines:
             match = self.authentication_re.match(line)
