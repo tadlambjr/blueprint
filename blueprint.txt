@@ -12,6 +12,7 @@ PLATFORM: accounting
 	🔒 AccountingDataAdapterController
 	    PUT /mg-transaction-test
 	    PUT /mg-transaction
+	    POST /sustain-transaction/{systemTransactionId}/replay
 
 	Repository: ofl-next-accounting-filter-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-filter-resource)
 
@@ -57,7 +58,7 @@ PLATFORM: accounting
 	    PATCH /accounting/filter/transactions
 
 	🔒 CarrierEdgeController
-	    
+	    GET /operationsaudit-summary
 
 	🔒 BillingFacilityDetailsExperienceController
 	    GET /accounting/facility/details
@@ -78,7 +79,9 @@ PLATFORM: accounting
 	Repository: ofl-next-accounting-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-stand-in-service)
 
 	🔒 AccountingStandInController
-	    
+	    GET /users
+	    GET /users/{id}
+	    GET /facility
 
 	Repository: ofl-next-accounting-web (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-web)
 
@@ -171,14 +174,15 @@ PLATFORM: carrier
 	    GET /reports
 
 	🔒 OperationsController
-	    
+	    GET /operations/audit-summary
 
 	Repository: ofl-next-carrier-web (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-web)
 
 	Repository: ofl-next-carrier-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-stand-in-service.git)
 
 	🔒 CarrierStandInController
-	    
+	    GET /users
+	    GET /users/{id}
 
 	Repository: ofl-next-carrier-contract-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-contract-resource-service)
 
@@ -267,6 +271,7 @@ PLATFORM: customer
 	🔒 CustomerDataController
 	    POST /customer-data/{id}/metadata
 	    POST /customer-data/{id}/replay
+	    POST /customer-data/replay
 
 	🔒 CustomerEdgeController
 	    GET /carrierAccountNumbers/primary/{billingGroupId}
@@ -279,6 +284,8 @@ PLATFORM: customer
 	Repository: ofl-next-customer-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-stand-in-service)
 
 	🔒 CustomerStandInController
+	    GET /users
+	    GET /users/{id}
 	    GET /users/organization
 	    GET api/v1/user/claims
 	    POST /customer-transactions
@@ -313,7 +320,10 @@ PLATFORM: customer
 	    POST /file
 
 	  FileSummaryController
-	    
+	    GET /file-error
+	    DELETE /file-error
+	    GET /file-summary
+	    DELETE /file-summary
 
 	  UserInfoController
 	    GET /user/info
@@ -500,7 +510,7 @@ PLATFORM: shared
 	Repository: ofl-next-rules-core-service (⎇  git: https://github.com/CardinalHealth/ofl-next-rules-core-service)
 
 	🔒 RulesController
-	    
+	    POST /recipe_requests
 
 	Repository: ofl-next-cloud-config-server (⎇  git: https://github.com/CardinalHealth/ofl-next-cloud-config-server)
 
