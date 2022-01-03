@@ -2,6 +2,7 @@ import os
 import logging
 import configparser
 from controller import Controller
+from service import Service
 
 class Repository:
     # port
@@ -9,6 +10,7 @@ class Repository:
     java_path = 'src/main/java'
 
     controllers = []
+    services = []
 
     def __init__(self, dir, name):
         self._dir = dir
@@ -32,10 +34,12 @@ class Repository:
             if len(files) > 0:
                 for file in files:
                     if file.endswith('.java'):
-                        if 'Controller' in file:
+                        if file.endswith('Controller.java'):
                             controller = Controller(f'{root}/{file}')
                             self.controllers.append(controller)
-
+                        elif file.endswith('Service.java'):
+                            service = Service(f'{root}/{file}')
+                            self.services.append(service)
 
     def __str__(self):
         return f'\n\tRepository: {self._name} ({self.git_repo})'
