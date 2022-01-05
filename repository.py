@@ -19,14 +19,8 @@ class Repository:
         self._name = name
         self._services = services
         self.get_git_repo()
-        self.scan_code()
         logging.info(self)
-
-    def limit_services_to_this_repository(self):
-        if 'services' in self._services:
-            for service in self._services['services']:
-                if 'repo_name' in service and service['repo_name'] == self._name:
-                    self.repo_services.append(service)
+        self.scan_code()
 
     def get_git_repo(self):
         config = configparser.ConfigParser()
@@ -36,7 +30,6 @@ class Repository:
             self.git_repo = u'\u2387  git: ' + config.get('remote "origin"', 'url')
         except:
             self.git_repo = 'git repo section not found'
-        self.limit_services_to_this_repository()
 
     # def convert_to_yml_name(self, service_name):
     #     shortened = service_name[:-len('Service')]
@@ -70,15 +63,21 @@ class Repository:
 
     def get_repo_detail_string(self):
         output = []
-        service = self.repo_services[0]
-        if 'port' in service:
-            output.append(f"\t\tport: {service['port']}")
-        if len(service['publishes']) > 0:
-            output.append('Publishes to:')
-            output.extend(service['publishes'])
-        if len(service['subscribes']) > 0:
-            output.append('Subscribes to:')
-            output.extend(service['subscribes'])
+        if 'services' in self._services:
+            for service in self._services['services']:
+                if 'repo_name' in service and service['repo_name'] == self._name:
+                    if 'name' in service:
+                        output.append(f"\t\tname: {service['name']}")
+                    if 'port' in service:
+                        output.append(f"port: {service['port']}")
+                    if len(service['publishes']) > 0:
+                        output.append('PUBLISHES TO:')
+                        for topic in service['publishes']:
+                            output.append(u'  \U000021e8' + f' {topic}')
+                    if len(service['subscribes']) > 0:
+                        output.append('SUBSCRIBES TO:')
+                        for topic in service['subscribes']:
+                            output.append(u'  \U000021e6' + f' {topic}')
         return str.join('\n\t\t', output)
 
     def __str__(self):

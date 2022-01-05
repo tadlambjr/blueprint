@@ -1,68 +1,39 @@
-PLATFORM: shared-logging
-PLATFORM: clam-av-gcp-client
-PLATFORM: accounting
-  service: accounting-stand-in
-  service: accounting-apigee-stand-in
-  service: pricing-rules-core
-  service: ofl-next-accounting-system-tests
-  service: pricing-resource
-  service: accounting-invoice-resource
-  service: pricing-lookup
-  service: accounting-edge-service
-  service: accounting-experience
-  service: filter-processor
-  service: filter-resource
-  service: allocation-data-processor
-  service: accounting-data-adapter
-  service: allocation-resource-service
-PLATFORM: customer
-  service: customer-edge
-  service: customer-data-processor
-  service: customer-experience-api
-  service: customer-stand-in
-  service: customer-resource
-  service: customer-data-adapter
-  service: customer-system-tests
-  service: customer-apigee-stand-in
-PLATFORM: ecosystem
-  service: ecosystem-data-adapter
-  service: location-edge
-  service: ofl-next-ecosystem-system-test
-  service: location-resource
-  service: uaa
-  service: user-edge
-  service: user-resource
-  service: login-experience-api
-  service: messaging-api
-PLATFORM: carrier
-  service: ofl-next-carrier-system-tests
-  service: carrier-stand-in
-  service: carrier-apigee-stand-in
-  service: edi-data-processor
-  service: ofl-next-carrier-data-processor
-  service: ofl-next-carrier-contract-resource-service
-  service: ofl-next-carrier-rules-core-service
-  service: ofl-next-carrier-experience-api
-  service: ofl-next-carrier-invoice-resource-service
-  service: ofl-next-carrier-edge-service
-PLATFORM: supplier
-  service: supplier-resource
-  service: supplier-experience
-  service: supplier-stand-in
-  service: supplier-data-adapter
-  service: supplier-edge
-  service: supplier-data-processor
-  service: supplier-system-test
-  service: supplier-apigee-stand-in
-PLATFORM: shared
-  service: ofl-next-web-config
-  service: apigee-stand-in
 Root directory: /Users/tad.lamb/devl/ofl-next
 
-PLATFORM NAME: accounting
 
 PLATFORM: accounting
 =========================
+
+	Repository: ofl-next-accounting-data-adapter (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-data-adapter)
+		name: accounting-data-adapter
+		port: 8093
+		PUBLISHES TO:
+		  ⇨ mg-transaction-received
+		  ⇨ mg-transaction-parsed
+		  ⇨ sustain-transform-complete
+		  ⇨ rules-core-processing-success-pricing(processing-success)
+		  ⇨ rules-core-processing-error-pricing(processing-error)
+		  ⇨ liability-accepted
+		  ⇨ liability-failed
+		  ⇨ allocation-processing-success
+		  ⇨ allocation-processing-error
+		  ⇨ transaction-received
+		SUBSCRIBES TO:
+		  ⇦ accounting-data-adapter-pricing-failed-dlq
+		  ⇦ allocation-data-processor-rules-core-processing-success-pricing-dlq
+		  ⇦ pricing-resource-rules-core-processing-error-pricing-dlq
+		  ⇦ pricing-rules-core-liability-accepted-dlq
+		  ⇦ accounting-data-adapter-allocation-processing-error-dlq
+		  ⇦ accounting-data-adapter-allocation-processing-success-dlq
+		  ⇦ accounting-data-adapter-mg-transaction-received-dlq
+		  ⇦ accounting-data-adapter-mg-transaction-parsed-dlq
+		  ⇦ accounting-data-adapter-sustain-transform-complete-dlq
+		  ⇦ sustain-transform-complete
+		  ⇦ mg-transaction-received
+		  ⇦ mg-transaction-parsed
+		  ⇦ pricing-failed
+		  ⇦ allocation-processing-success
+		  ⇦ allocation-processing-error
 
 	  🔒 LocalSustainController
 		 POST /tmsintegrationapi/api/v1/import/monarch/
@@ -85,35 +56,27 @@ PLATFORM: accounting
 	  SubscriberHelperService
 	  RandomizerService
 
-	Repository: ofl-next-accounting-data-adapter (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-data-adapter)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-accounting-filter-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-filter-resource)
+		name: filter-resource
+		port: 8103
+		PUBLISHES TO:
+		  ⇨ af-transaction-clean-up-request
+		  ⇨ match-complete
+		  ⇨ repost-match-request
+		  ⇨ liability-failed
+		  ⇨ filter-audit
+		SUBSCRIBES TO:
+		  ⇦ liability-failed
+		  ⇦ af-transaction-clean-up-request
+		  ⇦ filter-audit
+		  ⇦ accounting-edge-service-map-from-cost-audit-dlq
+		  ⇦ filter-resource-liability-failed-dlq
+		  ⇦ filter-processor-transaction-received-dlq
+		  ⇦ filter-processor-match-complete-dlq
+		  ⇦ filter-processor-repost-match-request-dlq
+		  ⇦ filter-processor-transaction-payer-assigned-dlq
+		  ⇦ filter-resource-af-transaction-clean-up-request-dlq
+		  ⇦ filter-resource-filter-audit-dlq
 
 	  🔒 FinanceReportController
 		 GET /financeReport
@@ -149,100 +112,32 @@ PLATFORM: accounting
 	  LiabilityFailedEventService
 	  CleanUpTransactionService
 
-	Repository: ofl-next-accounting-filter-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-filter-resource)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-rules-lookup-service (⎇  git: https://github.com/CardinalHealth/ofl-next-rules-lookup-service)
+		name: pricing-lookup
+		port: 8095
 
 	    LookupController
 		 POST /lookup
 	  LookupService
 
-	Repository: ofl-next-rules-lookup-service (⎇  git: https://github.com/CardinalHealth/ofl-next-rules-lookup-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-allocation-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-allocation-resource-service)
+		name: allocation-resource-service
+		port: 8088
 	  AllocationResourceService
 
-	Repository: ofl-next-allocation-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-allocation-resource-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-accounting-filter-processor (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-filter-processor)
+		name: filter-processor
+		port: 8102
+		PUBLISHES TO:
+		  ⇨ filter-audit
+		  ⇨ liability-accepted
+		  ⇨ match-complete
+		  ⇨ liability-failed
+		SUBSCRIBES TO:
+		  ⇦ transaction-payer-assigned
+		  ⇦ transaction-received
+		  ⇦ match-complete
+		  ⇦ repost-match-request
 	  AccountingFilterTransactionService
 	  CustomerDataService
 	  NonAcuteAccountDetailsService
@@ -251,35 +146,12 @@ PLATFORM: accounting
 	  FilterResourceService
 	  FilterRecommendationService
 
-	Repository: ofl-next-accounting-filter-processor (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-filter-processor)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-accounting-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-experience-api)
+		name: accounting-experience
+		port: 8105
+		PUBLISHES TO:
+		  ⇨ transaction-payer-assigned
+		  ⇨ filter-audit
 	  ExperienceService
 
 	  🔒 PendingReviewExperienceController
@@ -304,65 +176,18 @@ PLATFORM: accounting
 	  FilterResourceService
 	  InvoiceResourceService
 
-	Repository: ofl-next-accounting-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-experience-api)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-accounting-system-tests (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-system-tests)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+		name: ofl-next-accounting-system-tests
+		port: 5000
+
+	Repository: ofl-next-pricing-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-pricing-resource-service)
+		name: pricing-resource
+		port: 8091
+		PUBLISHES TO:
+		  ⇨ pricing-failed
+		SUBSCRIBES TO:
+		  ⇦ pricing-audit
+		  ⇦ rules-core-processing-error-pricing
 	  RuleResourceService
 
 	  🔒 ResourceServiceController
@@ -372,35 +197,38 @@ PLATFORM: accounting
 	  ResourceService
 	  RuleRecipeService
 
-	Repository: ofl-next-pricing-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-pricing-resource-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-accounting-invoice-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-invoice-resource-service.git)
+		name: accounting-invoice-resource
+		port: 8071
+		SUBSCRIBES TO:
+		  ⇦ af-transaction-clean-up-request
+		  ⇦ allocation-processing-error
+		  ⇦ allocation-processing-success
+		  ⇦ filter-audit
+		  ⇦ liability-accepted
+		  ⇦ liability-failed
+		  ⇦ map-from-cost-audit
+		  ⇦ match-complete
+		  ⇦ mg-transaction-parsed
+		  ⇦ mg-transaction-received
+		  ⇦ pricing-audit
+		  ⇦ pricing-failed
+		  ⇦ repost-match-request
+		  ⇦ rules-core-processing-error-pricing
+		  ⇦ rules-core-processing-success-pricing
+		  ⇦ sustain-transform-complete
+		  ⇦ transaction-payer-assigned
+		  ⇦ transaction-received
+		  ⇦ carrier-outbound-transaction
+		  ⇦ raw-transaction-save-complete
+		  ⇦ raw-transaction-transformation-complete
+		  ⇦ rules-core-audit-carrier
+		  ⇦ rules-core-processing-error-carrier
+		  ⇦ rules-core-processing-success-carrier
+		  ⇦ rules-core-request-carrier
+		  ⇦ save-bundled-transaction
+		  ⇦ transaction-audit-failed
+		  ⇦ transaction-mapping-complete
 	  InvoiceResourceService
 
 	  🔒 TransactionReconciliationEventController
@@ -412,35 +240,9 @@ PLATFORM: accounting
 	  TransactionReconciliationAggregateService
 	  InvoiceTransactionXrefService
 
-	Repository: ofl-next-accounting-invoice-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-invoice-resource-service.git)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-accounting-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-stand-in-service)
+		name: accounting-stand-in
+		port: 8120
 
 	  🔒 AccountingStandInController
 		 GET /users
@@ -448,98 +250,31 @@ PLATFORM: accounting
 		 GET /facility
 	  AccountingStandInService
 
-	Repository: ofl-next-accounting-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-stand-in-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-accounting-web (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-web)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-allocation-data-processor (⎇  git: https://github.com/CardinalHealth/ofl-next-allocation-data-processor)
+		name: allocation-data-processor
+		port: 8201
+		PUBLISHES TO:
+		  ⇨ allocation-processing-success
+		  ⇨ allocation-processing-error
+		SUBSCRIBES TO:
+		  ⇦ rules-core-processing-success-pricing
 	  AllocationDataProcessorService
 	  AllocationProcessorService
 	  AllocationPublisherService
 
-	Repository: ofl-next-allocation-data-processor (⎇  git: https://github.com/CardinalHealth/ofl-next-allocation-data-processor)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-accounting-transaction-edge-service (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-transaction-edge-service)
+		name: accounting-edge-service
+		port: 8094
+		PUBLISHES TO:
+		  ⇨ transaction-received
+		  ⇨ match-complete
+		  ⇨ map-from-cost-audit
+		  ⇨ liability-accepted
+		SUBSCRIBES TO:
+		  ⇦ map-from-cost-audit
 	  TransactionEdgeService
 
 	    FakeCustomerEdgeServiceController
@@ -561,69 +296,51 @@ PLATFORM: accounting
 	  PubSubPublisherService
 	  CostAuditMappingService
 
-	Repository: ofl-next-accounting-transaction-edge-service (⎇  git: https://github.com/CardinalHealth/ofl-next-accounting-transaction-edge-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-PLATFORM NAME: carrier
-
 PLATFORM: carrier
 =========================
 
 	Repository: ofl-next-carrier-apigee-proxies (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-apigee-proxies)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-carrier-invoice-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-invoice-resource-service)
+		name: ofl-next-carrier-invoice-resource-service
+		port: 8085
+		PUBLISHES TO:
+		  ⇨ transaction-audit-failed
+		  ⇨ carrier-110-inbound
+		  ⇨ carrier-110-inbound-reprocess
+		  ⇨ carrier-110-metadata
+		  ⇨ carrier-process-transaction
+		  ⇨ rules-core-processing-error-carrier
+		  ⇨ rules-core-processing-success-carrier
+		  ⇨ carrier-outbound-transaction
+		  ⇨ rules-core-request-carrier
+		  ⇨ rules-core-audit-carrier
+		  ⇨ transaction-mapping-complete
+		  ⇨ raw-transaction-preparse-complete
+		  ⇨ raw-transaction-transformation-complete
+		  ⇨ raw-transaction-save-complete
+		  ⇨ save-bundled-transaction
+		  ⇨ fedex-edi-110-file-received
+		SUBSCRIBES TO:
+		  ⇦ carrier-110-metadata
+		  ⇦ rules-core-audit-carrier
+		  ⇦ ofl-next-carrier-data-processor-carrier-110-inbound-dlq
+		  ⇦ ofl-next-carrier-data-processor-carrier-110-inbound-reprocess-dlq
+		  ⇦ ofl-next-carrier-data-processor-carrier-outbound-transaction-dlq
+		  ⇦ ofl-next-carrier-data-processor-carrier-process-transaction-dlq
+		  ⇦ ofl-next-carrier-data-processor-rules-core-processing-error-carrier-dlq
+		  ⇦ ofl-next-carrier-data-processor-rules-core-processing-success-carrier-dlq
+		  ⇦ ofl-next-carrier-data-processor-transaction-audit-failed-dlq
+		  ⇦ ofl-next-carrier-data-processor-transaction-mapping-complete-dlq
+		  ⇦ ofl-next-carrier-data-processor-save-bundled-transaction-dlq
+		  ⇦ edi-data-processor-fedex-edi-110-file-received-dlq
+		  ⇦ edi-data-processor-raw-transaction-preparse-complete-dlq
+		  ⇦ edi-data-processor-raw-transaction-transformation-complete-dlq
+		  ⇦ edi-data-processor-raw-transaction-save-complete-dlq
+		  ⇦ ofl-next-carrier-invoice-resource-service-carrier-110-metadata-dlq
+		  ⇦ ofl-next-carrier-invoice-resource-service-rules-core-audit-carrier-dlq
+		  ⇦ ofl-next-carrier-rules-core-service-rules-core-request-carrier-dlq
 
 	  🔒 FileMetadataController
 		 POST /file-metadata
@@ -692,164 +409,60 @@ PLATFORM: carrier
 	  RuleRecipeService
 	  BundledTransactionService
 
-	Repository: ofl-next-carrier-invoice-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-invoice-resource-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-carrier-edi-infrastructure (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-edi-infrastructure)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-carrier-edi-data-processor (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-edi-data-processor)
+		name: edi-data-processor
+		port: 8090
+		PUBLISHES TO:
+		  ⇨ raw-transaction-preparse-complete
+		  ⇨ raw-transaction-transformation-complete
+		  ⇨ raw-transaction-save-complete
+		  ⇨ transaction-mapping-complete
+		SUBSCRIBES TO:
+		  ⇦ fedex-edi-110-file-received
+		  ⇦ raw-transaction-preparse-complete
+		  ⇦ raw-transaction-transformation-complete
+		  ⇦ raw-transaction-save-complete
 	  PubSubPublisherService
 	  GcsFileService
 	  FileMetadataService
 	  RawTransactionService
 
-	Repository: ofl-next-carrier-edi-data-processor (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-edi-data-processor)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-carrier-invoice-edge-api (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-invoice-edge-api)
+
 
 	    InvoiceController
 		 GET /invoices
 	  InvoiceService
 
-	Repository: ofl-next-carrier-invoice-edge-api (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-invoice-edge-api)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-carrier-system-tests (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-system-tests)
+		name: ofl-next-carrier-system-tests
+		port: 5000
 	  TokenService
 
-	Repository: ofl-next-carrier-system-tests (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-system-tests)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-carrier-data-processor (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-data-processor)
+		name: ofl-next-carrier-data-processor
+		port: 8084
+		PUBLISHES TO:
+		  ⇨ transaction-audit-failed
+		  ⇨ carrier-110-metadata
+		  ⇨ rules-core-request-carrier
+		  ⇨ carrier-110-inbound-reprocess
+		  ⇨ carrier-outbound-transaction
+		  ⇨ carrier-process-transaction
+		  ⇨ save-bundled-transaction
+		SUBSCRIBES TO:
+		  ⇦ transaction-audit-failed
+		  ⇦ carrier-110-inbound
+		  ⇦ rules-core-processing-success-carrier
+		  ⇦ rules-core-processing-error-carrier
+		  ⇦ carrier-110-inbound-reprocess
+		  ⇦ carrier-outbound-transaction
+		  ⇦ carrier-process-transaction
+		  ⇦ transaction-mapping-complete
+		  ⇦ save-bundled-transaction
 
 	  🔒 FileMetadataController
 		 GET /file-metadata
@@ -884,35 +497,9 @@ PLATFORM: carrier
 	  FilePublisherService
 	  AcceptedTransactionPublisherService
 
-	Repository: ofl-next-carrier-data-processor (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-data-processor)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-carrier-edge-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-edge-service)
+		name: ofl-next-carrier-edge-service
+		port: 8099
 
 	  🔒 ReportsController
 		 GET /reports
@@ -921,100 +508,21 @@ PLATFORM: carrier
 		 GET /operations/audit-summary
 	  OperationsService
 
-	Repository: ofl-next-carrier-edge-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-edge-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-carrier-web (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-web)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-carrier-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-stand-in-service.git)
+		name: carrier-stand-in
+		port: 8121
 
 	  🔒 CarrierStandInController
 		 GET /users
 		 GET /users/{id}
 	  CarrierStandInService
 
-	Repository: ofl-next-carrier-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-stand-in-service.git)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-carrier-contract-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-contract-resource-service)
+		name: ofl-next-carrier-contract-resource-service
+		port: 8083
 
 	  🔒 SurchargeDiscountsController
 		 GET /surcharge-discounts
@@ -1052,35 +560,11 @@ PLATFORM: carrier
 	  ServiceLevelService
 	  FuelSurchargeService
 
-	Repository: ofl-next-carrier-contract-resource-service (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-contract-resource-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-carrier-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-experience-api)
+		name: ofl-next-carrier-experience-api
+		port: 8087
+		PUBLISHES TO:
+		  ⇨ carrier-outbound-transaction
 	  ExperienceService
 
 	  🔒 TransactionController
@@ -1096,99 +580,45 @@ PLATFORM: carrier
 	  TransactionService
 	  BundledTransactionService
 
-	Repository: ofl-next-carrier-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-experience-api)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-carrier-apigee-pipelines (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-apigee-pipelines)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-PLATFORM NAME: customer
+
 
 PLATFORM: customer
 =========================
 
 	Repository: ofl-next-customer-experience-proxy (git repo section not found)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-customer-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-resource)
+		name: customer-resource
+		port: 8111
+		PUBLISHES TO:
+		  ⇨ raw-carrier-account-number-received
+		  ⇨ raw-facility-received
+		  ⇨ customer-data-raw-received
+		  ⇨ customer-data-saved
+		  ⇨ clean-file-information
+		  ⇨ start-file-summary
+		  ⇨ file-summary-generated
+		  ⇨ data-processing-error
+		  ⇨ data-processing-error-saved
+		SUBSCRIBES TO:
+		  ⇦ carrier-account-number-change
+		  ⇦ facility-change
+		  ⇦ customer-data-change
+		  ⇦ customer-data-standardized
+		  ⇦ customer-edge-customer-data-saved-dlq
+		  ⇦ customer-metadata-received
+		  ⇦ customer-sftp-account-creation-details
+		  ⇦ customer-sftp-account-status-update
+		  ⇦ save-clean-file-information
+		  ⇦ customer-file-formats
+		  ⇦ customer-file-preparse-summary
+		  ⇦ customer-file-parsed-record
+		  ⇦ start-file-summary
+		  ⇦ billing-group-change
+		  ⇦ data-processing-error
+		  ⇦ save-customer-file-type
 
 	  🔒 SftpAccountController
 		 GET /sftp/sftpUsername/{username}
@@ -1240,35 +670,13 @@ PLATFORM: customer
 	  CustomerDataStandardizedService
 	  ProcessingErrorService
 
-	Repository: ofl-next-customer-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-resource)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-customer-edge-service (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-edge-service)
+		name: customer-edge
+		port: 8104
+		PUBLISHES TO:
+		  ⇨ customer-metadata-received
+		SUBSCRIBES TO:
+		  ⇦ customer-data-saved
 	  CustomerEdgeService
 
 	  🔒 CustomerDataController
@@ -1286,35 +694,11 @@ PLATFORM: customer
 	  CustomerMatchResultService
 	  CustomerDataService
 
-	Repository: ofl-next-customer-edge-service (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-edge-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-customer-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-stand-in-service)
+		name: customer-stand-in
+		port: 8116
+		SUBSCRIBES TO:
+		  ⇦ customer-sftp-account-creation-success
 
 	  🔒 CustomerStandInController
 		 GET /users
@@ -1328,65 +712,17 @@ PLATFORM: customer
 		 GET /getSftpPassword
 	  CustomerStandInService
 
-	Repository: ofl-next-customer-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-stand-in-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-customer-web (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-web)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-customer-data-adapter (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-data-adapter)
+		name: customer-data-adapter
+		port: 8115
+		PUBLISHES TO:
+		  ⇨ carrier-account-number-change
+		  ⇨ facility-change
+		  ⇨ customer-data-change
+		  ⇨ billing-group-change
 
 	  🔒 CustomerSyncController
 		 POST /customer/syncCarrierAccountNumber
@@ -1396,35 +732,34 @@ PLATFORM: customer
 	  PubSubPublisherService
 	  CustomerSyncService
 
-	Repository: ofl-next-customer-data-adapter (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-data-adapter)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-customer-data-processor (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-data-processor)
+		name: customer-data-processor
+		port: 8110
+		PUBLISHES TO:
+		  ⇨ customer-data-standardized
+		  ⇨ customer-sftp-account-creation-details
+		  ⇨ customer-sftp-account-creation-success
+		  ⇨ customer-sftp-account-status-update
+		  ⇨ save-clean-file-information
+		  ⇨ customer-clean-file-records
+		  ⇨ customer-file-preparse-summary
+		  ⇨ customer-file-formats
+		  ⇨ customer-file-mapping-identified
+		  ⇨ customer-file-records-ready-for-parsing
+		  ⇨ customer-file-parsed-record
+		  ⇨ customer-file-records-parsing-error
+		  ⇨ data-processing-error
+		  ⇨ no-sftp-account-left-can-assign
+		  ⇨ save-customer-file-type
+		SUBSCRIBES TO:
+		  ⇦ customer-data-raw-received
+		  ⇦ create-customer-sftp-account
+		  ⇦ delete-customer-sftp-account
+		  ⇦ clean-file-received
+		  ⇦ clean-file-information
+		  ⇦ untrusted-file-received
+		  ⇦ customer-file-mapping-identified
+		  ⇦ customer-file-records-ready-for-parsing
 	  CleanFileReceivedService
 	  CustomerDataService
 	  FileRecordsService
@@ -1439,65 +774,23 @@ PLATFORM: customer
 	  CustomerFileInformationService
 	  ProcessingErrorService
 
-	Repository: ofl-next-customer-data-processor (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-data-processor)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-customer-system-tests (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-system-tests)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+		name: customer-system-tests
+		port: 5000
+		PUBLISHES TO:
+		  ⇨ customer-data-change
+
+	Repository: ofl-next-customer-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-experience-api)
+		name: customer-experience-api
+		port: 8114
+		PUBLISHES TO:
+		  ⇨ create-customer-sftp-account
+		  ⇨ delete-customer-sftp-account
+		SUBSCRIBES TO:
+		  ⇦ file-summary-generated
+		  ⇦ customer-sftp-account-creation-success
+		  ⇦ data-processing-error-saved
+		  ⇦ no-sftp-account-left-can-assign
 
 	    SftpAccountController
 		 POST /sftp/createAccount
@@ -1524,129 +817,26 @@ PLATFORM: customer
 	  UserEdgeService
 	  UserInfoService
 
-	Repository: ofl-next-customer-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-customer-experience-api)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-PLATFORM NAME: ecosystem
-
 PLATFORM: ecosystem
 =========================
 
 	Repository: ofl-next-ecosystem-login-experience-proxy (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-login-experience-proxy)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
 
 	Repository: ofl-next-ecosystem-web-config-proxy (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-web-config-proxy)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
 
 	Repository: ofl-next-ecosystem-login-web (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-login-web)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-ecosystem-messaging-api (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-messaging-api)
+		name: messaging-api
+		port: 8123
+		PUBLISHES TO:
+		  ⇨ communication-prepared
+		  ⇨ communication-sent
+		SUBSCRIBES TO:
+		  ⇦ communication-prepared
 
 	  🔒 MessageController
 		 POST /messages
@@ -1656,35 +846,24 @@ PLATFORM: ecosystem
 	  PubSubPublisherService
 	  EmailMessageService
 
-	Repository: ofl-next-ecosystem-messaging-api (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-messaging-api)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-ecosystem-location-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-location-resource)
+		name: location-resource
+		port: 8097
+		PUBLISHES TO:
+		  ⇨ intellimatch-file-ready-for-processing
+		  ⇨ intellimatch-file-processing-complete
+		  ⇨ intellimatch-request-result
+		  ⇨ geolocation-match-request
+		  ⇨ geolocation-match-result
+		SUBSCRIBES TO:
+		  ⇦ address-change
+		  ⇦ address-match
+		  ⇦ address-match-result
+		  ⇦ intellimatch-file-ready-for-processing
+		  ⇦ intellimatch-file-processing-complete
+		  ⇦ intellimatch-request-result
+		  ⇦ geolocation-match-request
+		  ⇦ geolocation-match-result
 
 	  🔒 IntellimatchController
 		 POST /matchfile/target
@@ -1711,65 +890,12 @@ PLATFORM: ecosystem
 	  IntellimatchRequestService
 	  FileHistoryService
 
-	Repository: ofl-next-ecosystem-location-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-location-resource)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-uaa (git repo section not found)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-ecosystem-user-edge-api (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-user-edge-api)
+		name: user-edge
+		port: 8109
 
 	  🔒 UserController
 		 GET users/{user-id}
@@ -1785,65 +911,16 @@ PLATFORM: ecosystem
 	  PermissionXrefService
 	  UserRoleService
 
-	Repository: ofl-next-ecosystem-user-edge-api (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-user-edge-api)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-accounting-system-test (git repo section not found)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-ecosystem-location-edge-api (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-location-edge-api)
+		name: location-edge
+		port: 8096
+		PUBLISHES TO:
+		  ⇨ address-change
+		  ⇨ address-match
+		  ⇨ address-match-result
 
 	  🔒 LocationMatchCompletedResponseController
 		 POST /matchNotification
@@ -1859,35 +936,9 @@ PLATFORM: ecosystem
 	  LocationEdgeService
 	  LocationMatchRequestService
 
-	Repository: ofl-next-ecosystem-location-edge-api (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-location-edge-api)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-ecosystem-user-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-user-resource)
+		name: user-resource
+		port: 8112
 
 	  🔒 EntityGroupController
 		 POST entity-groups
@@ -1924,100 +975,22 @@ PLATFORM: ecosystem
 	  RoleService
 	  PermissionXrefService
 
-	Repository: ofl-next-ecosystem-user-resource (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-user-resource)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-ecosystem-data-adapter (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-data-adapter)
+		name: ecosystem-data-adapter
+		port: 8098
 
 	  🔒 AddressSyncController
 		 POST /address/sync
 		 POST /address/fullRefresh
 	  AddressSyncService
 
-	Repository: ofl-next-ecosystem-data-adapter (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-data-adapter)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-ecosystem-system-test (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-system-test)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+		name: ofl-next-ecosystem-system-test
+		port: 5000
+
+	Repository: ofl-next-ecosystem-login-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-login-experience-api)
+		name: login-experience-api
+		port: 8122
 
 	    AuthenticationController
 		 POST authentication/password-reset
@@ -2025,99 +998,17 @@ PLATFORM: ecosystem
 	  AuthenticationService
 	  TemplateEngineService
 
-	Repository: ofl-next-ecosystem-login-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-ecosystem-login-experience-api)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-PLATFORM NAME: pot
-
 PLATFORM: pot
 =========================
 
 	Repository: ofl-next-carrier-web-pot (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-web-pot)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
 
 	Repository: ofl-next-carrier-system-tests-pot (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-system-tests-pot)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-carrier-experience-api-pot (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-experience-api-pot)
+
 	  ExperienceService
 
 	    CarrierExperienceFileController
@@ -2126,68 +1017,14 @@ PLATFORM: pot
 		 GET /files/{fileId}/errors
 	  CarrierExperienceFileService
 
-	Repository: ofl-next-carrier-experience-api-pot (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-experience-api-pot)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-carrier-data-processor-pot (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-data-processor-pot)
+
 	  FilePublisherService
 	  ParseService
 	  StorageService
 
-	Repository: ofl-next-carrier-data-processor-pot (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-data-processor-pot)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-carrier-resource-service-pot (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-resource-service-pot)
+
 
 	    FilesController
 		 GET /files
@@ -2195,159 +1032,24 @@ PLATFORM: pot
 	  ShipmentService
 	  MetaDataService
 
-	Repository: ofl-next-carrier-resource-service-pot (⎇  git: https://github.com/CardinalHealth/ofl-next-carrier-resource-service-pot)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-PLATFORM NAME: shared
-
 PLATFORM: shared
 =========================
 
 	Repository: ofl-next-shared-logging (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-logging)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
 
 	Repository: ofl-next-concourse-pipeline (⎇  git: https://github.com/CardinalHealth/ofl-next-concourse-pipeline)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
 
 	Repository: ofl-next-web-instrumentation (⎇  git: https://github.com/CardinalHealth/ofl-next-web-instrumentation)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
 
 	Repository: ofl-next-shared-uaa (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-uaa)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-apigee-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-apigee-stand-in-service)
+		name: apigee-stand-in
+		port: 8119
 
 	    ApigeeStandInController
 		 POST oauth2/v2/token/jwtforoktab2e
@@ -2355,280 +1057,38 @@ PLATFORM: shared
 		 GET oauth2/v2/token/jwks.json
 	  ApigeeStandInService
 
-	Repository: ofl-next-apigee-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-apigee-stand-in-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-shared-web (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-web)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
 
 	Repository: ofl-next-shared-navigation-web-module (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-navigation-web-module)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
 
 	Repository: ofl-next-cloud-config (⎇  git: https://github.com/CardinalHealth/ofl-next-cloud-config)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-clam-av-gcp-client (⎇  git: https://github.com/CardinalHealth/ofl-next-clam-av-gcp-client)
+
 	  FileNotificationStorageService
 	  ClamAvService
 
-	Repository: ofl-next-clam-av-gcp-client (⎇  git: https://github.com/CardinalHealth/ofl-next-clam-av-gcp-client)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-shared-version (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-version)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
 
 	Repository: ofl-next-user-auth-web-module (⎇  git: https://github.com/CardinalHealth/ofl-next-user-auth-web-module)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-web-config (⎇  git: https://github.com/CardinalHealth/ofl-next-web-config)
+		name: ofl-next-web-config
+		port: 8089
 
 	    WebConfigController
 		 GET /webconfig
 
-	Repository: ofl-next-web-config (⎇  git: https://github.com/CardinalHealth/ofl-next-web-config)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-shared-login-web-module-test (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-login-web-module-test)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-shared-apigee-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-apigee-stand-in-service)
+
 
 	    ApigeeStandInController
 		 POST oauth2/v2/token/jwtforoktab2e
@@ -2636,95 +1096,14 @@ PLATFORM: shared
 		 GET oauth2/v2/token/jwks.json
 	  ApigeeStandInService
 
-	Repository: ofl-next-shared-apigee-stand-in-service (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-apigee-stand-in-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-shared-login-web-module (⎇  git: https://github.com/CardinalHealth/ofl-next-shared-login-web-module)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
 
 	Repository: ofl-next-api-config (⎇  git: https://github.com/CardinalHealth/ofl-next-api-config)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-rules-core-service (⎇  git: https://github.com/CardinalHealth/ofl-next-rules-core-service)
+
 
 	  🔒 RulesController
 		 POST /recipe_requests
@@ -2733,163 +1112,40 @@ PLATFORM: shared
 	  RestLookupService
 	  RuleService
 
-	Repository: ofl-next-rules-core-service (⎇  git: https://github.com/CardinalHealth/ofl-next-rules-core-service)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-cloud-config-server (⎇  git: https://github.com/CardinalHealth/ofl-next-cloud-config-server)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-PLATFORM NAME: supplier
+
 
 PLATFORM: supplier
 =========================
 
 	Repository: ofl-next-supplier-data-processor (git repo section not found)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+		name: supplier-data-processor
+		port: 8118
+		PUBLISHES TO:
+		  ⇨ opportunity-strategy-message
+		SUBSCRIBES TO:
+		  ⇦ customer-to-supplier-transaction-received
+		  ⇦ opportunity-strategy-message
+		  ⇦ routing-guide-requested
 
 	Repository: ofl-next-supplier-web (⎇  git: https://github.com/CardinalHealth/ofl-next-supplier-web)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
+
+	Repository: ofl-next-supplier-edge-api (⎇  git: https://github.com/CardinalHealth/ofl-next-supplier-edge-api)
+		name: supplier-edge
+		port: 8117
+		PUBLISHES TO:
+		  ⇨ customer-to-supplier-transaction-received
 
 	  🔒 CustomerTransactionController
 		 POST /customer-transactions
 	  CustomerTransactionService
 
-	Repository: ofl-next-supplier-edge-api (⎇  git: https://github.com/CardinalHealth/ofl-next-supplier-edge-api)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+	Repository: ofl-next-supplier-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-supplier-experience-api)
+		name: supplier-experience
+		port: 8106
+		PUBLISHES TO:
+		  ⇨ routing-guide-requested
 
 	    NewCustomerSetupResolutionController
 		 POST new-customer-setup-resolutions
@@ -2920,182 +1176,21 @@ PLATFORM: supplier
 	  AccountManagerService
 	  ResolutionOptionService
 
-	Repository: ofl-next-supplier-experience-api (⎇  git: https://github.com/CardinalHealth/ofl-next-supplier-experience-api)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
-
 	Repository: ofl-next-supplier-system-test (⎇  git: https://github.com/CardinalHealth/ofl-next-supplier-system-test)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+		name: supplier-system-test
+		port: 5000
 
 	Repository: ofl-next-supplier-stand-in-service (git repo section not found)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+		name: supplier-stand-in
+		port: 8108
 
 	Repository: ofl-next-supplier-data-adapter (git repo section not found)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+		name: supplier-data-adapter
+		port: 8113
 
 	Repository: ofl-next-supplier-experience-proxy (git repo section not found)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+
 
 	Repository: ofl-next-supplier-resource (git repo section not found)
-		port: 8093
-		Publishes to:
-		mg-transaction-received
-		mg-transaction-parsed
-		sustain-transform-complete
-		rules-core-processing-success-pricing(processing-success)
-		rules-core-processing-error-pricing(processing-error)
-		liability-accepted
-		liability-failed
-		allocation-processing-success
-		allocation-processing-error
-		transaction-received
-		Subscribes to:
-		accounting-data-adapter-pricing-failed-dlq
-		allocation-data-processor-rules-core-processing-success-pricing-dlq
-		pricing-resource-rules-core-processing-error-pricing-dlq
-		pricing-rules-core-liability-accepted-dlq
-		accounting-data-adapter-allocation-processing-error-dlq
-		accounting-data-adapter-allocation-processing-success-dlq
-		accounting-data-adapter-mg-transaction-received-dlq
-		accounting-data-adapter-mg-transaction-parsed-dlq
-		accounting-data-adapter-sustain-transform-complete-dlq
-		sustain-transform-complete
-		mg-transaction-received
-		mg-transaction-parsed
-		pricing-failed
-		allocation-processing-success
-		allocation-processing-error
+		name: supplier-resource
+		port: 8107

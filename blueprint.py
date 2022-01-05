@@ -7,7 +7,7 @@ import os
 import re
 
 rootdir = os.getenv('PROJECT_FOLDER')
-master_config_location = '/Users/tad.lamb/devl/ofl-next/ofl-next-accelerators/master-config/master_config.yml'
+master_config_location = rootdir + '/ofl-next-accelerators/master-config/master_config.yml'
 platform_names = ['accounting', 'carrier', 'customer', 'ecosystem', 'pot', 'shared', 'supplier', 'all']
 platforms = {'accounting': {}, 'carrier': {}, 'customer': {}, 'ecosystem': {}, 'pot': {}, 'shared': {}, 'supplier': {}, 'shared-logging': {}, 'pot': {}, 'clam-av-gcp-client': {}}
 
@@ -27,7 +27,6 @@ def process_platforms(platform_list):
 
     # Process platforms
     for platform_name in platform_list:
-        logging.info(f'PLATFORM NAME: {platform_name}')
         services = platforms[platform_name]['services'] if 'services' in platforms[platform_name] else None
         platform = Platform(rootdir, platform_name, platforms[platform_name])
         # platforms[platform_name]['platform'] = platform
@@ -48,7 +47,7 @@ def process_master_config():
         if match:
             curr_platform = platforms[match.group(1)]
             curr_platform['services'] = []
-            logging.info(f'PLATFORM: {match.group(1)}')
+            logging.debug(f'PLATFORM: {match.group(1)}')
             continue
 
         # Check for a service file
@@ -58,7 +57,7 @@ def process_master_config():
             curr_platform['services'].append(curr_service)
             curr_service['publishes'] = []
             curr_service['subscribes'] = []
-            logging.info(f'  service: {match.group(1)}')
+            logging.debug(f'  service: {match.group(1)}')
             continue
 
         # Check for repository
