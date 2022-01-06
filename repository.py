@@ -2,6 +2,7 @@ import os
 import re
 import logging
 import configparser
+import graphviz
 from controller import Controller
 from service import Service
 
@@ -14,10 +15,11 @@ class Repository:
     services = []
     repo_services = []
 
-    def __init__(self, dir, name, services):
+    def __init__(self, dir, name, services, dot):
         self._dir = dir
         self._name = name
         self._services = services
+        self._dot = dot
         self.get_git_repo()
         logging.info(self)
         self.scan_code()
@@ -67,16 +69,19 @@ class Repository:
             for service in self._services['services']:
                 if 'repo_name' in service and service['repo_name'] == self._name:
                     if 'name' in service:
+                        # self._dot.node(service['name'], shape='box', style='filled', fillcolor='lightgrey')
                         output.append(f"\t\tname: {service['name']}")
                     if 'port' in service:
                         output.append(f"port: {service['port']}")
                     if len(service['publishes']) > 0:
                         output.append('PUBLISHES TO:')
                         for topic in service['publishes']:
+                            # self._dot.edge(service['name'], topic)
                             output.append(u'  \U000021e8' + f' {topic}')
                     if len(service['subscribes']) > 0:
                         output.append('SUBSCRIBES TO:')
                         for topic in service['subscribes']:
+                            # self._dot.edge(topic, service['name'])
                             output.append(u'  \U000021e6' + f' {topic}')
         return str.join('\n\t\t', output)
 

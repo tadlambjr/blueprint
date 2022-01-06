@@ -1,10 +1,11 @@
 import argparse
 from controller import Controller
-from platform import Platform
+from monarch_platform import MonarchPlatform
 import logging
 import sys
 import os
 import re
+import graphviz
 
 rootdir = os.getenv('PROJECT_FOLDER')
 master_config_location = rootdir + '/ofl-next-accelerators/master-config/master_config.yml'
@@ -21,20 +22,19 @@ publish_topic_re = re.compile(r'\s{10}-\s(.*)')
 subscribe_topic_re = re.compile(r'\s{10}-\sname:\s(.*)')
 end_pubsub_re = re.compile(r'\s{0,8}[^\s]')
 
-def process_platforms(platform_list):
+def process_platforms(platform_list, dot):
     logging.info(f'Root directory: {rootdir}\n')
-    # dot = Digraph(comment='Monarch')
+    
 
     # Process platforms
     for platform_name in platform_list:
         services = platforms[platform_name]['services'] if 'services' in platforms[platform_name] else None
-        platform = Platform(rootdir, platform_name, platforms[platform_name])
-        # platforms[platform_name]['platform'] = platform
-        # dot.node(p, p)
+        monarch_platform = MonarchPlatform(rootdir, platform_name, platforms[platform_name], dot)
+        # platforms[platform_name]['platform'] = monarch_platform
 
-    # dot.render('blueprint', view=True)
+    dot.render(directory=rootdir+'../../blueprint', view=True).replace('\\', '/')
 
-def process_master_config():
+def process_master_config(dot):
     lines = open(master_config_location).readlines()
     curr_platform = None
     curr_service = None
@@ -45,19 +45,23 @@ def process_master_config():
         # Check for platform
         match = platform_re.match(line)
         if match:
-            curr_platform = platforms[match.group(1)]
+            name = match.group(1)
+            curr_platform = platforms[name]
             curr_platform['services'] = []
-            logging.debug(f'PLATFORM: {match.group(1)}')
+            logging.debug(f'PLATFORM: {name}')
+            dot.node(name, shape='folder')
             continue
 
         # Check for a service file
         match = service_re.match(line)
         if match:
-            curr_service = { 'name': match.group(1)}
+            name = match.group(1)
+            curr_service = { 'name': name}
             curr_platform['services'].append(curr_service)
             curr_service['publishes'] = []
             curr_service['subscribes'] = []
-            logging.debug(f'  service: {match.group(1)}')
+            logging.debug(f'  service: {name}')
+            dot.node(name, shape='box', style='filled', fillcolor='lightgrey')
             continue
 
         # Check for repository
@@ -78,16 +82,20 @@ def process_master_config():
             match = publish_topic_re.match(line)
             if match:
                 if publishing:
-                    logging.debug(f'\tpublishing to: {match.group(1)}')
-                    curr_service['publishes'].append(match.group(1))
+                    name = match.group(1)
+                    logging.debug(f'\tpublishing to: {name}')
+                    curr_service['publishes'].append(name)
+                    dot.edge(curr_service['name'], name)
                     continue
 
             # Check for topic being subscribed to
             match = subscribe_topic_re.match(line)
             if match:
                 if subscribing:
-                    logging.debug(f'\tsubscribing to: {match.group(1)}')
-                    curr_service['subscribes'].append(match.group(1))
+                    name = match.group(1)
+                    logging.debug(f'\tsubscribing to: {name}')
+                    curr_service['subscribes'].append(name)
+                    dot.edge(name, curr_service['name'])
                     continue
 
             # Check for line after a pub or sub
@@ -123,9 +131,11 @@ if __name__ == "__main__":
     log_level = logging.DEBUG if args['verbose'] else logging.INFO
     logging.basicConfig(format='%(message)s', level=log_level, handlers=targets)
 
-    process_master_config()
+    dot = graphviz.Digraph("Monarch", comment="Monarch Overview")
+
+    process_master_config(dot)
     target_string = args['target'][0]
     if target_string == 'all':
-        process_platforms(platform_names[:-1])
+        process_platforms(platform_names[:-1], dot)
     else:
-        process_platforms(target_string.split(','))
+        process_platforms(target_string.split(','), dot)

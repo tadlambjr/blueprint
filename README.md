@@ -10,3 +10,6 @@ TODO
     * from services
     * from ui
 * Add an annotations file for description nodes to show what a step is doing
+
+
+You'll need to `brew install graphviz`
