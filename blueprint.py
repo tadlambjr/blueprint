@@ -131,7 +131,7 @@ if __name__ == "__main__":
     log_level = logging.DEBUG if args['verbose'] else logging.INFO
     logging.basicConfig(format='%(message)s', level=log_level, handlers=targets)
 
-    dot = graphviz.Digraph("Monarch", comment="Monarch Overview")
+    dot = graphviz.Digraph("Monarch", comment="Monarch Overview", node_attr={"fontname": "Helvetica"})
 
     process_master_config(dot)
     target_string = args['target'][0]
