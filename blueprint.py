@@ -22,6 +22,8 @@ publish_topic_re = re.compile(r'\s{10}-\s(.*)')
 subscribe_topic_re = re.compile(r'\s{10}-\sname:\s(.*)')
 end_pubsub_re = re.compile(r'\s{0,8}[^\s]')
 
+subgraphs = []
+
 def process_platforms(platform_list, dot):
     logging.info(f'Root directory: {rootdir}\n')
     
@@ -32,24 +34,34 @@ def process_platforms(platform_list, dot):
         monarch_platform = MonarchPlatform(rootdir, platform_name, platforms[platform_name], dot)
         # platforms[platform_name]['platform'] = monarch_platform
 
-    dot.render(directory=rootdir+'../../blueprint', view=True).replace('\\', '/')
 
-def process_master_config(dot):
+def process_master_config(platform_list):
     lines = open(master_config_location).readlines()
     curr_platform = None
     curr_service = None
+    curr_graph = None
     subscribing = False
     publishing = False
+    skipping = False
 
     for line in lines:
         # Check for platform
         match = platform_re.match(line)
         if match:
             name = match.group(1)
-            curr_platform = platforms[name]
-            curr_platform['services'] = []
-            logging.debug(f'PLATFORM: {name}')
-            dot.node(name, shape='folder')
+            if name in platform_list:
+                logging.debug(f'Found {name} in {platform_list}')
+                skipping = False
+                curr_platform = platforms[name]
+                curr_platform['services'] = []
+                logging.debug(f'PLATFORM: {name}')
+                curr_graph = graphviz.Digraph('cluster_'+name, graph_attr={"label": name.upper(), "fontname": "Helvetica"}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica"})
+                subgraphs.append(curr_graph)
+                continue
+            else:
+                skipping = True
+
+        if skipping:
             continue
 
         # Check for a service file
@@ -61,7 +73,7 @@ def process_master_config(dot):
             curr_service['publishes'] = []
             curr_service['subscribes'] = []
             logging.debug(f'  service: {name}')
-            dot.node(name, shape='box', style='filled', fillcolor='lightgrey')
+            curr_graph.node(name, shape='box', style='filled', fillcolor='lightgrey')
             continue
 
         # Check for repository
@@ -85,7 +97,7 @@ def process_master_config(dot):
                     name = match.group(1)
                     logging.debug(f'\tpublishing to: {name}')
                     curr_service['publishes'].append(name)
-                    dot.edge(curr_service['name'], name)
+                    curr_graph.edge(curr_service['name'], name)
                     continue
 
             # Check for topic being subscribed to
@@ -95,7 +107,7 @@ def process_master_config(dot):
                     name = match.group(1)
                     logging.debug(f'\tsubscribing to: {name}')
                     curr_service['subscribes'].append(name)
-                    dot.edge(name, curr_service['name'])
+                    curr_graph.edge(name, curr_service['name'])
                     continue
 
             # Check for line after a pub or sub
@@ -131,11 +143,15 @@ if __name__ == "__main__":
     log_level = logging.DEBUG if args['verbose'] else logging.INFO
     logging.basicConfig(format='%(message)s', level=log_level, handlers=targets)
 
-    dot = graphviz.Digraph("Monarch", comment="Monarch Overview", node_attr={"fontname": "Helvetica"})
-
-    process_master_config(dot)
     target_string = args['target'][0]
-    if target_string == 'all':
-        process_platforms(platform_names[:-1], dot)
-    else:
-        process_platforms(target_string.split(','), dot)
+    target_platforms = platform_names[:-1] if target_string == 'all' else target_string.split(',')
+
+    dot = graphviz.Digraph("Monarch", comment="Monarch Overview", graph_attr={"rankdir": "TB"}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica"})
+
+    process_master_config(target_platforms)
+    process_platforms(target_platforms, dot)
+
+    for graph in subgraphs:
+        dot.subgraph(graph)
+
+    dot.render(directory=rootdir+'../../blueprint', view=True).replace('\\', '/')
