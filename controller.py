@@ -102,6 +102,11 @@ class Controller:
     def get_filename(self):
         return self._filename
 
+    def node_string(self):
+        mappings = "\l".join(self.mappings)
+        secured = '  ' if self.authentication_missing else u'\U0001F512 '
+        return f'{secured}{self._class_name}\l{mappings}'
+
     def __str__(self):
         mappings = "\n\t\t ".join(self.mappings)
         secured = '  ' if self.authentication_missing else u'\U0001F512 '

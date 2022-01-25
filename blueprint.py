@@ -26,12 +26,11 @@ subgraphs = []
 
 def process_platforms(platform_list, dot):
     logging.info(f'Root directory: {rootdir}\n')
-    
 
     # Process platforms
     for platform_name in platform_list:
         services = platforms[platform_name]['services'] if 'services' in platforms[platform_name] else None
-        monarch_platform = MonarchPlatform(rootdir, platform_name, platforms[platform_name], dot)
+        monarch_platform = MonarchPlatform(rootdir, platform_name, platforms[platform_name])
         # platforms[platform_name]['platform'] = monarch_platform
 
 
@@ -55,7 +54,8 @@ def process_master_config(platform_list):
                 curr_platform = platforms[name]
                 curr_platform['services'] = []
                 logging.debug(f'PLATFORM: {name}')
-                curr_graph = graphviz.Digraph('cluster_'+name, graph_attr={"label": name.upper(), "fontname": "Helvetica"}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica"})
+                curr_graph = graphviz.Digraph('cluster_'+name, graph_attr={"label": name.upper(), "fontname": "Helvetica", "fontsize": "32"}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica", "nodesep": ".25"})
+                curr_platform['subgraph'] = curr_graph
                 subgraphs.append(curr_graph)
                 continue
             else:
@@ -146,7 +146,9 @@ if __name__ == "__main__":
     target_string = args['target'][0]
     target_platforms = platform_names[:-1] if target_string == 'all' else target_string.split(',')
 
-    dot = graphviz.Digraph("Monarch", comment="Monarch Overview", graph_attr={"rankdir": "TB"}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica"})
+    dot = graphviz.Digraph("Monarch", comment="Monarch Overview", graph_attr={"rankdir": "LR", "layout": "dot"}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica"})
+    # dot, fdp
+    # neato, twopi, circo, sfdp, osage, patchwork, 
 
     process_master_config(target_platforms)
     process_platforms(target_platforms, dot)
