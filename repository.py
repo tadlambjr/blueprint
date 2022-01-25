@@ -14,15 +14,18 @@ class Repository:
     controllers = []
     services = []
     repo_services = []
+    service_files = []
 
-    def __init__(self, dir, name, services, dot):
+    def __init__(self, dir, name, properties):
         self._dir = dir
         self._name = name
-        self._services = services
-        self._dot = dot
+        self._properties = properties
+        self._services = properties['services']
+        self._graph = properties['subgraph']
         self.get_git_repo()
         logging.info(self)
         self.scan_code()
+        logging.debug(f'PROPERTIES: {properties}')
 
     def get_git_repo(self):
         config = configparser.ConfigParser()
@@ -61,27 +64,33 @@ class Repository:
                             class_name = re.match(r'(.*)\.java', file).group(1)
                             # self.locate_service_dict(class_name)
                             service = Service(f'{root}/{file}')
-                            self.services.append(service)
+                            self.service_files.append(service)
+                controller_cluster = graphviz.Digraph('cluster_controllers', graph_attr={"rankdir": "LR", "label": "Controllers", "fontname": "Helvetica", "fontsize": "32"}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica", "nodesep": ".25"})
+                for controller in self.controllers:
+                    controller_cluster.node(controller.node_string(), shape='box')
+                self._graph.subgraph(controller_cluster)
 
     def get_repo_detail_string(self):
         output = []
-        if 'services' in self._services:
-            for service in self._services['services']:
+        if len(self._services) > 0:
+            for service in self._services:
+                logging.debug(f"SERVICE: [{service}]")
                 if 'repo_name' in service and service['repo_name'] == self._name:
                     if 'name' in service:
-                        # self._dot.node(service['name'], shape='box', style='filled', fillcolor='lightgrey')
+                        logging.debug(f"NAME: {service['name']}")
+                        self._graph.node(service['name'], shape='box', style='filled', fillcolor='lightgrey')
                         output.append(f"\t\tname: {service['name']}")
                     if 'port' in service:
                         output.append(f"port: {service['port']}")
                     if len(service['publishes']) > 0:
                         output.append('PUBLISHES TO:')
                         for topic in service['publishes']:
-                            # self._dot.edge(service['name'], topic)
+                            # self._graph.edge(service['name'], topic)
                             output.append(u'  \U000021e8' + f' {topic}')
                     if len(service['subscribes']) > 0:
                         output.append('SUBSCRIBES TO:')
                         for topic in service['subscribes']:
-                            # self._dot.edge(topic, service['name'])
+                            # self._graph.edge(topic, service['name'])
                             output.append(u'  \U000021e6' + f' {topic}')
         return str.join('\n\t\t', output)
 
