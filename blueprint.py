@@ -1,16 +1,25 @@
 import argparse
 from controller import Controller
-from monarch_platform import MonarchPlatform
+from repository import Repository
 import logging
 import sys
 import os
 import re
+import json
 import graphviz
 
 rootdir = os.getenv('PROJECT_FOLDER')
 master_config_location = rootdir + '/ofl-next-accelerators/master-config/master_config.yml'
-platform_names = ['accounting', 'carrier', 'customer', 'ecosystem', 'pot', 'shared', 'supplier', 'all']
-platforms = {'accounting': {}, 'carrier': {}, 'customer': {}, 'ecosystem': {}, 'pot': {}, 'shared': {}, 'supplier': {}, 'shared-logging': {}, 'pot': {}, 'clam-av-gcp-client': {}}
+platform_names = ['accounting', 'carrier', 'customer', 'ecosystem', 'shared', 'supplier', 'all']
+platforms = {'accounting': { "titleColor": "#CF6785", "serviceColor": "#F3D4DE"}, 
+             'carrier': {"titleColor": "#7A4683", "serviceColor": "#CDBDD0"}, 
+             'customer': {"titleColor": "#87B357", "serviceColor": "#CDE6B2"}, 
+             'ecosystem': {"titleColor": "#46937E", "serviceColor": "#A5D3CA"}, 
+             'pot': {}, 
+             'shared': {}, 
+             'supplier': {"titleColor": "#E2913E", "serviceColor": "#F9DCAF"}, 
+             'shared-logging': {}, 
+             'clam-av-gcp-client': {}}
 
 platform_re = re.compile(r'\s{2}-\sname:\s(.*)')
 service_re = re.compile(r'\s{6}-\sname:\s(.*)')
@@ -22,17 +31,43 @@ publish_topic_re = re.compile(r'\s{10}-\s(.*)')
 subscribe_topic_re = re.compile(r'\s{10}-\sname:\s(.*)')
 end_pubsub_re = re.compile(r'\s{0,8}[^\s]')
 
+ignore_list = ['.DS_Store', '.gradle']
+repositories = []
 subgraphs = []
+
+
+# Topic color: #8EBAE1
+# controller color: #CDE6B2
 
 def process_platforms(platform_list, dot):
     logging.info(f'Root directory: {rootdir}\n')
 
     # Process platforms
     for platform_name in platform_list:
+        logging.info(f'PLATFORM: {platform_name.upper()}')
+        logging.info('=========================')
+
+        cloud_config = []
+        if platform_name == 'pot':
+            logging.info('skipping pot platform')
+        else:
+            cloud_config_path = f'{rootdir}/shared/ofl-next-cloud-config/config/stage/'
+            file = open(f'{cloud_config_path}{platform_name}.json')
+            cloud_config = json.load(file)
+
+
         services = platforms[platform_name]['services'] if 'services' in platforms[platform_name] else None
-        monarch_platform = MonarchPlatform(rootdir, platform_name, platforms[platform_name])
+        current_dir = f'{rootdir}/{platform_name}'
+        for dir in os.listdir(current_dir):
+            if dir not in ignore_list:
+                repository = Repository(current_dir, dir, platforms[platform_name], cloud_config)
+                repositories.append(repository)
+
         # platforms[platform_name]['platform'] = monarch_platform
 
+        buckets = cloud_config['gcp']['buckets']
+        for bucket in buckets:
+            logging.info(f"BUCKET: {bucket['name']}")
 
 def process_master_config(platform_list):
     lines = open(master_config_location).readlines()
@@ -54,7 +89,8 @@ def process_master_config(platform_list):
                 curr_platform = platforms[name]
                 curr_platform['services'] = []
                 logging.debug(f'PLATFORM: {name}')
-                curr_graph = graphviz.Digraph('cluster_'+name, graph_attr={"label": name.upper(), "fontname": "Helvetica", "fontsize": "32"}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica", "nodesep": ".25"})
+                font_color = platforms[name]['titleColor'] if 'titleColor' in platforms[name] else 'black'
+                curr_graph = graphviz.Digraph('cluster_'+name, graph_attr={"label": name.upper(), "fontname": "Helvetica", "fontsize": "32", "fontcolor": font_color}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica", "nodesep": ".25"})
                 curr_platform['subgraph'] = curr_graph
                 subgraphs.append(curr_graph)
                 continue

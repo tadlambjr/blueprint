@@ -7,7 +7,7 @@ from controller import Controller
 from service import Service
 
 class Repository:
-    # port
+    CONTROLLER_COLOR = '#CDE6B2'
     git_path = '.git/config'
     java_path = 'src/main/java'
 
@@ -16,12 +16,13 @@ class Repository:
     repo_services = []
     service_files = []
 
-    def __init__(self, dir, name, properties):
+    def __init__(self, dir, name, properties, cloud_config):
         self._dir = dir
         self._name = name
         self._properties = properties
-        self._services = properties['services']
+        self._services = properties['services'] if 'services' in properties else []
         self._graph = properties['subgraph']
+        self._buckets = cloud_config['gcp']['buckets']
         self.get_git_repo()
         logging.info(self)
         self.scan_code()
@@ -65,9 +66,9 @@ class Repository:
                             # self.locate_service_dict(class_name)
                             service = Service(f'{root}/{file}')
                             self.service_files.append(service)
-                controller_cluster = graphviz.Digraph('cluster_controllers', graph_attr={"rankdir": "LR", "label": "Controllers", "fontname": "Helvetica", "fontsize": "32"}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica", "nodesep": ".25"})
+                controller_cluster = graphviz.Digraph('cluster_controllers', graph_attr={"rankdir": "TB", "rank": "same", "label": "Controllers", "fontname": "Helvetica", "fontsize": "32"}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica", "nodesep": ".25"})
                 for controller in self.controllers:
-                    controller_cluster.node(controller.node_string(), shape='box')
+                    controller_cluster.node(controller.node_string(), shape='box', style='filled', fillcolor=self.CONTROLLER_COLOR)
                 self._graph.subgraph(controller_cluster)
 
     def get_repo_detail_string(self):
@@ -78,7 +79,7 @@ class Repository:
                 if 'repo_name' in service and service['repo_name'] == self._name:
                     if 'name' in service:
                         logging.debug(f"NAME: {service['name']}")
-                        self._graph.node(service['name'], shape='box', style='filled', fillcolor='lightgrey')
+                        self._graph.node(service['name'], shape='box', style='filled', fillcolor=self._properties['serviceColor'])
                         output.append(f"\t\tname: {service['name']}")
                     if 'port' in service:
                         output.append(f"port: {service['port']}")

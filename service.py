@@ -3,6 +3,9 @@ import logging
 
 class Service:
 
+    get_re    = re.compile(r'.*getForObject\((.*)\)')
+    post_re   = re.compile(r'.*postForObject\((.*)\)')
+
     def __init__(self, filename):
         self._filename = filename
         self._class_name = re.match(r'^.*\/(.*)\.java', filename).group(1)
@@ -18,7 +21,14 @@ class Service:
 
         lines = open(self._filename).readlines()
         for line in lines:
-            x = 1
+            match = self.get_re.match(line)
+            if match:
+                logging.info(f'{self._class_name} GET {match.group(1)}')
+
+            match = self.post_re.match(line)
+            if match:
+                logging.info(f'{self._class_name} POST {match.group(1)}')
+
 
     def get_filename(self):
         return self._filename
