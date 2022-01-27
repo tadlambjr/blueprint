@@ -27,6 +27,8 @@ class Controller:
     delete_matching_re    = re.compile(r'\s+\@DeleteMapping\(\"(.*)\"\)')
     delete_matching_path_re = re.compile(r'\s+\@DeleteMapping\(path\s*=\s*\"(.*?)\"\)')
 
+    SPECIAL_CHARACTERS = '[\s\{\}-]'
+
     def __init__(self, filename):
         self._filename = filename
         self._class_name = re.match(r'^.*\/(.*)\.java', filename).group(1)
@@ -102,10 +104,17 @@ class Controller:
     def get_filename(self):
         return self._filename
 
-    def node_string(self):
-        mappings = "\l".join(self.mappings)
-        secured = '  ' if self.authentication_missing else u'\U0001F512 '
-        return f'{secured}{self._class_name}\l{mappings}'
+    def node_name(self):
+        return self._class_name
+
+    def node_label(self):
+        mappings = ''
+        for mapping in self.mappings:
+            new_mapping = re.sub('{', '\{', mapping)
+            new_mapping = re.sub('}', '\}', new_mapping)
+            connection_port = re.sub(self.SPECIAL_CHARACTERS, '', mapping)
+            mappings = mappings + f'| <{connection_port}>{new_mapping}'
+        return f'{self._class_name}{mappings}'
 
     def __str__(self):
         mappings = "\n\t\t ".join(self.mappings)

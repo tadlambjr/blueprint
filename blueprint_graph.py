@@ -14,7 +14,6 @@ class BlueprintGraph:
              self.create_platform_graph(dot, name, platforms[name])
 
     def create_platform_graph(self, dot, name, properties):
-        # logging.info(f'ALL PROPERTIES: {properties}')
         font_color = properties['titleColor'] if 'titleColor' in properties else 'black'
         label = f'<<b>{name.upper()}</b>>'
         curr_graph = graphviz.Digraph('cluster_'+name, graph_attr={"label": label, "fontname": "Helvetica", "fontsize": "32", "fontcolor": font_color}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica", "nodesep": ".25"})
@@ -56,19 +55,13 @@ class BlueprintGraph:
 
     def add_services(self, graph, properties):
         for service in properties['services']:
-            logging.info(f'SERVICE: {service}')
             name = service['name']
             cluster_label = f'{name}\l' + u'\u2387  git: ' + f" {service['repo_name']}"
             curr_graph = graphviz.Digraph('cluster_'+name, graph_attr={"label": cluster_label, "fontsize": "16"})
             
             if 'controllers' in service:
                 for controller in service['controllers']:
-                    curr_graph.node(controller.node_string(), shape='box', style='filled', fillcolor=self.CONTROLLER_COLOR)
-                    logging.info(f'CONTROLLER: {controller.node_string()}')
-# controller_cluster = graphviz.Digraph('cluster_controllers', graph_attr={"rankdir": "TB", "rank": "same", "label": "Controllers", "fontname": "Helvetica", "fontsize": "32"}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica", "nodesep": ".25"})
-# for controller in self.controllers:
-#     controller_cluster.node(controller.node_string(), shape='box', style='filled', fillcolor=self.CONTROLLER_COLOR)
-# self._graph.subgraph(controller_cluster)
+                    curr_graph.node(controller.node_name(), controller.node_label(), shape='Mrecord', style='filled', fillcolor=self.CONTROLLER_COLOR)
 
             curr_graph.node(f'{name}-service', label=f"{name}:{service['port']}", shape='box', fillcolor=properties['serviceColor'], style='filled')
             for topic in service['publishes']:
@@ -78,5 +71,3 @@ class BlueprintGraph:
                 curr_graph.node(topic, shape='box', fontcolor='white', fillcolor=self.TOPIC_COLOR, style='filled')
                 curr_graph.edge(topic, f'{name}-service')
             graph.subgraph(curr_graph)
-
-
