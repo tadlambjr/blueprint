@@ -2,7 +2,7 @@ import os
 import re
 import logging
 import configparser
-import graphviz
+# import graphviz
 from controller import Controller
 from service import Service
 
@@ -16,16 +16,15 @@ class Repository:
     repo_services = []
     service_files = []
 
-    def __init__(self, dir, name, properties, cloud_config):
+    def __init__(self, dir, name, properties):
+        logging.info(f'REPOSITORY dir[{dir}] name[{name}]')
         self._dir = dir
         self._name = name
         self._properties = properties
         self._services = properties['services'] if 'services' in properties else []
-        self._graph = properties['subgraph']
-        self._buckets = cloud_config['gcp']['buckets']
         self.get_git_repo()
-        logging.info(self)
         self.scan_code()
+        properties['controllers'] = self.controllers
         logging.debug(f'PROPERTIES: {properties}')
 
     def get_git_repo(self):
@@ -37,39 +36,45 @@ class Repository:
         except:
             self.git_repo = 'git repo section not found'
 
-    # def convert_to_yml_name(self, service_name):
-    #     shortened = service_name[:-len('Service')]
-    #     output = [shortened[0].lower()]
-    #     for c in shortened[1:]:
-    #         if c in ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
-    #             output.append('-')
-    #             output.append(c.lower())
-    #         else:
-    #                  output.append(c)            
-    #     return str.join('', output)
+    def convert_to_yml_name(self, service_name):
+        shortened = service_name[:-len('Service')]
+        output = [shortened[0].lower()]
+        for c in shortened[1:]:
+            if c in ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
+                output.append('-')
+                output.append(c.lower())
+            else:
+                     output.append(c)            
+        return str.join('', output)
 
-    # def locate_service_dict(self, service_name):
-    #     yml_name = self.convert_to_yml_name(service_name)
-    #     logging.info(f'Trying to find {yml_name} in\n{self.repo_services}')
+    def locate_service_dict(self, service_name):
+        yml_name = self.convert_to_yml_name(service_name)
+        # logging.info(f'Trying to find {yml_name} in\n{self._services}')
+        for service in self._services:
+            if service['name'] == yml_name:
+                return service
 
     def scan_code(self):
+        c = []
         full_java_path = f'{self._dir}/{self._name}/{self.java_path}'
         for root, dirs, files in os.walk(full_java_path):
+            # logging.info(f"STEPPING INTO root[{root}] dirs[{dirs}] files[{files}]")
             if len(files) > 0:
                 for file in files:
                     if file.endswith('.java'):
                         if file.endswith('Controller.java'):
                             controller = Controller(f'{root}/{file}')
                             self.controllers.append(controller)
+                            c.append(controller)
                         elif file.endswith('Service.java'):
                             class_name = re.match(r'(.*)\.java', file).group(1)
-                            # self.locate_service_dict(class_name)
                             service = Service(f'{root}/{file}')
                             self.service_files.append(service)
-                controller_cluster = graphviz.Digraph('cluster_controllers', graph_attr={"rankdir": "TB", "rank": "same", "label": "Controllers", "fontname": "Helvetica", "fontsize": "32"}, edge_attr={"edge": "ortho"}, node_attr={"fontname": "Helvetica", "nodesep": ".25"})
-                for controller in self.controllers:
-                    controller_cluster.node(controller.node_string(), shape='box', style='filled', fillcolor=self.CONTROLLER_COLOR)
-                self._graph.subgraph(controller_cluster)
+                            if len(c) > 0:
+                                s = self.locate_service_dict(class_name)
+                                if s:
+                                    s['controllers'] = c
+                                    c = []
 
     def get_repo_detail_string(self):
         output = []
