@@ -59,7 +59,9 @@ class BlueprintGraph:
     def add_services(self, graph, properties):
         for service in properties['services']:
             name = service['name']
-            cluster_label = f'{name}\l' + u'\u2387  git: ' + f" {service['repo_name']}" if 'repo_name' in service else name
+            feature_list = f'\lfeatures: {",".join(service["features"])}' if len(service['features']) > 0 else ''
+            repo_name = '\l' + u'\u2387  git: ' + f" {service['repo_name']}" if 'repo_name' in service else ''
+            cluster_label = f'{name}{feature_list}{repo_name}'
             curr_graph = graphviz.Digraph('cluster_'+name, graph_attr={"label": cluster_label, "fontsize": "16"})
             
             if 'controllers' in service:

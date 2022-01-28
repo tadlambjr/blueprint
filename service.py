@@ -5,7 +5,6 @@ class Service:
 
     get_re    = re.compile(r'.*getForObject\((.*)\)')
     post_re   = re.compile(r'.*postForObject\((.*)\)')
-    # Allow look for exchange, patch, get/postForEntity
 
     def __init__(self, filename):
         self._filename = filename

@@ -19,12 +19,14 @@ class MasterConfig:
         subscribe_re = re.compile(r'\s{8}subscribe_topics:\s(.*)')
         publish_topic_re = re.compile(r'\s{10}-\s(.*)')
         subscribe_topic_re = re.compile(r'\s{10}-\sname:\s(.*)')
-        end_pubsub_re = re.compile(r'\s{0,8}[^\s]')
+        end_pubsub_or_feature_re = re.compile(r'\s{0,8}[^\s]')
+        features_re = re.compile(r'\s{0,8}features')
+        feature_re = re.compile(r'\s{0,10}-\sname:\s(.*)')
 
         lines = open(master_config_location).readlines()
         curr_platform = None
         curr_service = None
-        curr_graph = None
+        features = False
         subscribing = False
         publishing = False
         skipping = False
@@ -56,6 +58,7 @@ class MasterConfig:
                     curr_platform['services'].append(curr_service)
                     curr_service['publishes'] = []
                     curr_service['subscribes'] = []
+                    curr_service['features'] = []
                     logging.debug(f'  service: {name}')
                     continue
 
@@ -94,12 +97,24 @@ class MasterConfig:
                         continue
 
                 # Check for line after a pub or sub
-                match = end_pubsub_re.match(line)
+                match = end_pubsub_or_feature_re.match(line)
                 if match:
                     x = 'pub' if publishing else 'sub'
                     logging.debug(f'Turning off {x} with {line}')
                     publishing = False
                     subscribing = False
+
+            if features:
+                match = feature_re.match(line)
+                if match:
+                    logging.debug(f'Adding feature: {match.group(1)}')
+                    curr_service['features'].append(match.group(1))
+
+                # Check for line after features list
+                match = end_pubsub_or_feature_re.match(line)
+                if match:
+                    logging.debug(f'Turning off features with {line}')
+                    features = False
 
             # Check for start of publish topics
             match = publish_re.match(line)
@@ -113,4 +128,11 @@ class MasterConfig:
             if match:
                 logging.debug(f'Turning on subscribing with {line}')
                 subscribing = True
+                continue
+
+            # Check for start of features
+            match = features_re.match(line)
+            if match:
+                logging.debug(f'Turning on list of features with {line}')
+                features = True
                 continue

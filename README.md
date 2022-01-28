@@ -1,3 +1,5 @@
+You'll need to `brew install graphviz` in order to generate graphs
+
 TODO
 ====
 
@@ -7,7 +9,4 @@ TODO
     * from services
     * from ui
 * Show retries on pubsubs
-* List features from master config
-
-
-You'll need to `brew install graphviz`
+* Look for exchange, patch, get/postForEntity (other types of REST calls) in `service.py`
