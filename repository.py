@@ -15,13 +15,14 @@ class Repository:
     repo_services = []
     service_files = []
 
-    def __init__(self, dir, name, properties):
+    def __init__(self, dir, name, properties, suppress_airs):
         self._dir = dir
         self._name = name
         self._properties = properties
         self._services = properties['services'] if 'services' in properties else []
-        self.get_git_repo()
-        self.scan_code()
+        if not suppress_airs or name != 'ofl-next-accounting-invoice-resource-service':
+            self.get_git_repo()
+            self.scan_code()
         logging.debug(f'PROPERTIES: {properties}')
 
     def get_git_repo(self):

@@ -18,11 +18,11 @@ class BlueprintGraph:
         font_color = properties['titleColor'] if 'titleColor' in properties else 'black'
         label = f'<<b>{name.upper()}</b>>'
         curr_graph = graphviz.Digraph('cluster_'+name, graph_attr={"label": label, "fontname": "Helvetica", "fontsize": "32", "fontcolor": font_color}, edge_attr={"fontname": "Helvetica", "edge": "ortho"}, node_attr={"fontname": "Helvetica", "nodesep": ".25"})
-        # self.add_buckets(curr_graph, properties)
-        # self.add_instances(curr_graph, properties)
+        self.add_buckets(curr_graph, properties)
+        self.add_instances(curr_graph, properties)
         self.add_services(curr_graph, properties)
-        # self.add_ui(curr_graph, name)
-        # self.add_additions(curr_graph, target_platforms)
+        self.add_ui(curr_graph, name)
+        self.add_additions(curr_graph, target_platforms)
         dot.subgraph(curr_graph)
 
     def add_instances(self, graph, properties):
@@ -62,9 +62,9 @@ class BlueprintGraph:
             cluster_label = f'{name}\l' + u'\u2387  git: ' + f" {service['repo_name']}" if 'repo_name' in service else name
             curr_graph = graphviz.Digraph('cluster_'+name, graph_attr={"label": cluster_label, "fontsize": "16"})
             
-            # if 'controllers' in service:
-            #     for controller in service['controllers']:
-            #         curr_graph.node(controller.node_name(), controller.node_label(), shape='Mrecord', style='filled', fillcolor=self.CONTROLLER_COLOR)
+            if 'controllers' in service:
+                for controller in service['controllers']:
+                    curr_graph.node(controller.node_name(), controller.node_label(), shape='Mrecord', style='filled', fillcolor=self.CONTROLLER_COLOR)
 
             service_label = f"{name}:{service['port']}" if 'port' in service else name
             service_color = properties['serviceColor'] if 'serviceColor' in properties else 'lightgrey'

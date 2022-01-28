@@ -6,8 +6,8 @@ TODO
 * Include calls to endpoints
     * from services
     * from ui
-* Flag to exclude dlq's
-
+* Show retries on pubsubs
+* List features from master config
 
 
 You'll need to `brew install graphviz`

@@ -3,7 +3,13 @@ import re
 
 class MasterConfig:
 
-    def __init__(self, rootdir, platforms, platform_list):
+    def __init__(self, rootdir, platforms, platform_list, suppress_airs, suppress_dlqs):
+        self.process_file(rootdir, platforms, platform_list, suppress_airs, suppress_dlqs)
+
+    def strip_parens(self, topic):
+        return re.sub('\(.*\)', '', topic)
+
+    def process_file(self, rootdir, platforms, platform_list, suppress_airs, suppress_dlqs):
         master_config_location = rootdir + '/ofl-next-accelerators/master-config/master_config.yml'
         platform_re = re.compile(r'\s{2}-\sname:\s(.*)')
         service_re = re.compile(r'\s{6}-\sname:\s(.*)')
@@ -45,12 +51,13 @@ class MasterConfig:
             match = service_re.match(line)
             if match:
                 name = match.group(1)
-                curr_service = { 'name': name}
-                curr_platform['services'].append(curr_service)
-                curr_service['publishes'] = []
-                curr_service['subscribes'] = []
-                logging.debug(f'  service: {name}')
-                continue
+                if not suppress_airs or name != 'accounting-invoice-resource':
+                    curr_service = { 'name': name}
+                    curr_platform['services'].append(curr_service)
+                    curr_service['publishes'] = []
+                    curr_service['subscribes'] = []
+                    logging.debug(f'  service: {name}')
+                    continue
 
             # Check for repository
             match = repo_re.match(line)
@@ -70,18 +77,20 @@ class MasterConfig:
                 match = publish_topic_re.match(line)
                 if match:
                     if publishing:
-                        name = match.group(1)
+                        name = self.strip_parens(match.group(1))
                         logging.debug(f'\tpublishing to: {name}')
-                        curr_service['publishes'].append(name)
+                        if not suppress_dlqs or not name.endswith('-dlq'):
+                            curr_service['publishes'].append(name)
                         continue
 
                 # Check for topic being subscribed to
                 match = subscribe_topic_re.match(line)
                 if match:
                     if subscribing:
-                        name = match.group(1)
+                        name = self.strip_parens(match.group(1))
                         logging.debug(f'\tsubscribing to: {name}')
-                        curr_service['subscribes'].append(name)
+                        if not suppress_dlqs or not name.endswith('-dlq'):
+                            curr_service['subscribes'].append(name)
                         continue
 
                 # Check for line after a pub or sub
