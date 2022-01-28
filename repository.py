@@ -68,12 +68,10 @@ class Repository:
                     if len(service['publishes']) > 0:
                         output.append('PUBLISHES TO:')
                         for topic in service['publishes']:
-                            # self._graph.edge(service['name'], topic)
                             output.append(u'  \U000021e8' + f' {topic}')
                     if len(service['subscribes']) > 0:
                         output.append('SUBSCRIBES TO:')
                         for topic in service['subscribes']:
-                            # self._graph.edge(topic, service['name'])
                             output.append(u'  \U000021e6' + f' {topic}')
         return str.join('\n\t\t', output)
 
