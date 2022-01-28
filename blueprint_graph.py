@@ -59,14 +59,16 @@ class BlueprintGraph:
     def add_services(self, graph, properties):
         for service in properties['services']:
             name = service['name']
-            cluster_label = f'{name}\l' + u'\u2387  git: ' + f" {service['repo_name']}"
+            cluster_label = f'{name}\l' + u'\u2387  git: ' + f" {service['repo_name']}" if 'repo_name' in service else name
             curr_graph = graphviz.Digraph('cluster_'+name, graph_attr={"label": cluster_label, "fontsize": "16"})
             
             # if 'controllers' in service:
             #     for controller in service['controllers']:
             #         curr_graph.node(controller.node_name(), controller.node_label(), shape='Mrecord', style='filled', fillcolor=self.CONTROLLER_COLOR)
 
-            curr_graph.node(f'{name}-service', label=f"{name}:{service['port']}", shape='box', fillcolor=properties['serviceColor'], style='filled')
+            service_label = f"{name}:{service['port']}" if 'port' in service else name
+            service_color = properties['serviceColor'] if 'serviceColor' in properties else 'lightgrey'
+            curr_graph.node(f'{name}-service', label=service_label, shape='box', fillcolor=service_color, style='filled')
             for topic in service['publishes']:
                 curr_graph.node(topic, shape='box', fontcolor='white', fillcolor=self.TOPIC_COLOR, style='filled')
                 curr_graph.edge(f'{name}-service', topic)
